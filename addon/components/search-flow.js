@@ -16,7 +16,7 @@ export default Ember.Component.extend({
   },
   getParameter(parameter){
     return this.get('parameters').find(param => {
-      return parameter === param.name;
+      return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
   processQueries(query){
@@ -33,8 +33,7 @@ export default Ember.Component.extend({
       }
     });
   },
-  availableParameters: Ember.computed('parameters,searchQueries.[]', function(){
-    let availableParameters = Ember.A([]);
+  availableParameters: Ember.computed('parameters,searchQueries.[],searchQueries.@each.parameter', function(){
     return this.get('parameters').reject(parameter => {
       return parameter.allowMultiple === false && this.get('searchQueries').find(searchQuery => { 
         return searchQuery.get('parameter.name') === parameter.name;
@@ -48,39 +47,49 @@ export default Ember.Component.extend({
     return this.get('availableParameters').findBy('name', parameter.name);
   },
   actions: {
-    newSearchQuery(parameter){
+    newSearchQuery(){
+      let searchQuery = Ember.Object.create({
+        value: ''
+      });
+      this.get('searchQueries').pushObject(searchQuery);
+      this.set('newParameter', '');
+      this.set('addingNewSearchQuery', true);
+    },
+    newSearchQueryWithParameter(parameter){
       if(!this.isParameterAvailable(parameter)){
         return;
       }
       let searchQuery = Ember.Object.create({
         parameter,
-        value: ''
+        value: '',
       });
-      searchQuery.parameters = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameters);
+      searchQuery.parameter = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameter);
       this.get('searchQueries').pushObject(searchQuery);
-      this.set('newParameter', '');
       this.set('addingNewSearchQuery', true);
     },
     setParameterToQuery(parameter, searchQuery){
       searchQuery.set('parameter', parameter);
     },
     setValueToQuery(value, searchQuery){
-      searchQuery.set('value', value)
+      searchQuery.set('value', value);
       this.set('addingNewSearchQuery', false);
     },
     removeSearchQuery(query){
       this.get('searchQueries').removeObject(query);
     },
-    inputBlurred(searchQuery){
+    inputBlurred(searchQuery, isNewParameter){
       if(!searchQuery){
         return;
       }
-      if(!searchQuery.value){
-        this.get('searchQueries').removeObject(searchQuery);
+      
+      if(!isNewParameter){
+        if (!searchQuery.value){
+          this.get('searchQueries').removeObject(searchQuery);
+        }
+        this.set('addingNewSearchQuery', false);
       }
-      this.set('addingNewSearchQuery', false);
     },
-    inputFocused(searchQuery){
+    inputFocused(){
       this.set('addingNewSearchQuery', true);
     }
   }

@@ -1,1 +1,11 @@
 {{input class="search-flow_input" value=value placeholder=placeholder}}
+{{#if isFocused}}
+	{{#if availableOptions.length}}
+		<div class="search-flow_dropdown">
+			<div class="search-flow_dropdown-caret"></div>
+			{{#each availableOptions as |option|}}
+				<div class="search-flow_dropdown-option" {{action 'selectOption' option.value}}>{{option.title}}</div>
+			{{/each}}
+		</div>
+	{{/if}}
+{{/if}}

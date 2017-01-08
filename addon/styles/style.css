@@ -1,4 +1,3 @@
-
 .search-flow {
     display: block;
     border-radius: 10px;
@@ -51,7 +50,12 @@
 
 .search-flow_remove {
     float: left;
-    padding: 0 10px;
+    padding: 2px 5px 2px 10px;
+}
+
+.search-flow_remove:after {
+    content: '\00d7';
+    cursor: pointer;
 }
 
 .search-flow_add {
@@ -62,6 +66,10 @@
     border: none;
     font: inherit;
     cursor: pointer;
+}
+
+.search-flow_add:focus {
+    outline: none;
 }
 
 .search-flow_input {
@@ -92,3 +100,46 @@
 .search-flow_parameter_input .search-flow_input {
     color: #000;
 }
+
+.search-flow_dropdown {
+    position: absolute;
+    margin-top: 8px;
+    width: 100px;
+    max-height: 400px;
+    background: #fff;
+    border: 1px solid #eee;
+    box-shadow: rgba(193, 193, 193, 0.64) 1px 2px 1px 0px;
+    border-radius: 5px;
+}
+.search-flow_dropdown-option {
+    color: #000;
+    padding: 5px;
+}
+
+.search-flow_dropdown-option:hover, .search-flow_dropdown-option.selected {
+    background-color: #2185d0;
+    color: #fff
+}
+
+.search-flow_dropdown:after{
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 5px solid #d4d4d4;
+    top: -5px;
+    content: '';
+    left: 15px;
+    margin-left: -5px;
+    position: absolute;
+}
+
+/* Styling for second triangle (border) 
+
+.search-flow_dropdown:before {
+    border-left: 23px solid transparent;
+    border-right: 23px solid transparent;
+    border-bottom: 23px solid;
+    border-top-color: inherit;
+    top: -23px;
+    margin-left: -23px;
+}
+*/
