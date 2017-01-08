@@ -1,0 +1,1 @@
+export { default } from 'ember-search-flow/components/search-flow/input-dropdown';

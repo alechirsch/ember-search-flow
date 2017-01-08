@@ -1,1 +1,34 @@
+<div class="search-flow_queries">
+	{{#each searchQueries as |searchQuery|}}
+		{{#if searchQuery.parameter}}
+			<div class="search-flow_search-query">
+				<div class="search-flow_title">
+					{{searchQuery.parameter.title}} : 
+				</div>
+				<div class="search-flow_value">
+					{{search-flow/input-dropdown value=searchQuery.value searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
+				</div>
+				<div class="search-flow_remove" {{action 'removeSearchQuery' searchQuery}}>
+					x
+				</div>
+			</div>
+		{{else}}
+			<div class="search-flow_parameter_input">
+				{{search-flow/input-dropdown value=newParameter searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
+			</div>
+		{{/if}}
+	{{/each}}
+	{{#unless addingNewSearchQuery}}
+		<button class="search-flow_add" {{action 'newSearchQuery'}}>
+			Add Filters
+		</button>
+	{{/unless}}
+</div>
+<div class="search-flow_parameters">
+	{{#each availableParameters as |parameter|}}
+		<div class="search-flow_parameter" {{action 'newSearchQuery' parameter}}>
+			{{parameter.title}}
+		</div>
+	{{/each}}
+</div>
 {{yield}}

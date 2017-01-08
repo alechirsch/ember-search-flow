@@ -1,9 +1,0 @@
-{
-  "name": "ember-search-flow",
-  "keywords": [
-    "ember-addon"
-  ],
-  "dependencies": {
-    "ember-cli-htmlbars": "^1.0.10"
-  }
-}

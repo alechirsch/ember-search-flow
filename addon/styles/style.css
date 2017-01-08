@@ -1,0 +1,94 @@
+
+.search-flow {
+    display: block;
+    border-radius: 10px;
+    border: 1px solid #61a8bd;
+    padding: 10px;
+}
+
+.search-flow_parameters {
+    padding: 5px;
+}
+
+.search-flow_parameter {
+    display: inline-block;
+    margin-right: 10px;
+    background-color: #ece6e6;
+    border-radius: 10px;
+    padding: 5px;
+    cursor: pointer;
+}
+
+.search-flow_queries {
+    min-height: 35px;
+}
+
+.search-flow_select-parameter {
+    display: inline-block;
+    position: absolute;
+    padding: 5px;
+}
+
+.search-flow_search-query {
+    height: 22px;
+    padding: 3px 10px;
+    background-color: #2185d0;
+    display: inline-block;
+    border-radius: 14px;
+}
+
+.search-flow_title {
+    color: #d4d4d4;
+    float: left;
+    padding: 2px;
+    margin-right: 5px;
+}
+
+.search-flow_value {
+    float: left;
+    color: #fff;
+}
+
+.search-flow_remove {
+    float: left;
+    padding: 0 10px;
+}
+
+.search-flow_add {
+    display: inline-block;
+    position: absolute;
+    padding: 5px;
+    background: none;
+    border: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+.search-flow_input {
+    background: none;
+    border: none;
+    font: inherit;
+    display: inline-block;
+    color: #fff;
+    width: 5px;
+    padding: 2px;
+}
+
+.search-flow_input::-webkit-input-placeholder {
+    color: #d2cfcf;
+}
+
+.search-flow_input:focus {
+    border: none;
+    outline: 0;
+}
+
+.search-flow_parameter_input {
+    display: inline-block;
+    position: absolute;
+    padding: 2px;
+}
+
+.search-flow_parameter_input .search-flow_input {
+    color: #000;
+}
