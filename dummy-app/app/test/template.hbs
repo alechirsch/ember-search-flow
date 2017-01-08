@@ -1,3 +1,7 @@
 {{search-flow parameters=model.parameters query=model.query}}
+{{json-pretty
+    obj=model.query
+    shouldHighlight=true
+}}
 {{outlet}}
 

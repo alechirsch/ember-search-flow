@@ -19,20 +19,24 @@ export default Ember.Component.extend({
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
-  processQueries(query){
+  processQueries: Ember.observer('query', function() {
+    if (this.get('queryGeneretedByComponent')){
+      this.set('queryGeneretedByComponent', false);
+      return;
+    }
     let searchQueries = this.get('searchQueries');
-    Object.keys(query).forEach(key => {
+    Object.keys(this.get('query')).forEach(key => {
       let parameter = this.getParameter(key);
       if(parameter){
         let searchQuery = Ember.Object.create({
           parameter,
-          value: query[key]
+          value: this.get(`query.${key}`)
         });
         searchQuery.parameters = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameters);
         searchQueries.pushObject(searchQuery);
       }
     });
-  },
+  }),
   availableParameters: Ember.computed('parameters,searchQueries.[],searchQueries.@each.parameter', function(){
     return this.get('parameters').reject(parameter => {
       return parameter.allowMultiple === false && this.get('searchQueries').find(searchQuery => { 
@@ -45,6 +49,31 @@ export default Ember.Component.extend({
       return true;
     }
     return this.get('availableParameters').findBy('name', parameter.name);
+  },
+  generateQuery(){
+    let query = {};
+    this.get('searchQueries').forEach(searchQuery => {
+      let queryItem = query[searchQuery.parameter.name];
+      if (queryItem){
+        if (!Ember.isArray(queryItem)){
+          if (queryItem === searchQuery.value){
+            return;
+          }
+          queryItem = [queryItem];
+        }
+        if (queryItem.includes(searchQuery.value)){
+          return;
+        }
+        queryItem.push(searchQuery.value);
+        query[searchQuery.parameter.name] = queryItem;
+      }
+      else {
+        query[searchQuery.parameter.name] = searchQuery.value;
+      }
+    });
+
+    this.set('queryGeneretedByComponent', true);
+    this.set('query', query);
   },
   actions: {
     newSearchQuery(){
@@ -76,6 +105,7 @@ export default Ember.Component.extend({
     },
     removeSearchQuery(query){
       this.get('searchQueries').removeObject(query);
+      this.generateQuery();
     },
     inputBlurred(searchQuery, isNewParameter){
       if(!searchQuery){
@@ -87,6 +117,7 @@ export default Ember.Component.extend({
           this.get('searchQueries').removeObject(searchQuery);
         }
         this.set('addingNewSearchQuery', false);
+        this.generateQuery();
       }
     },
     inputFocused(){
