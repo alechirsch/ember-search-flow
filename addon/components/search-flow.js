@@ -5,7 +5,8 @@ export default Ember.Component.extend({
   layout,
   classNames: ['search-flow'],
   defaultParameterValues: {
-    allowMultiple: true
+    allowMultiple: true,
+    remoteOptions: false
   },
   init(){
     this._super(...arguments);
@@ -29,7 +30,7 @@ export default Ember.Component.extend({
       let parameter = this.getParameter(key);
       if(parameter){
         let searchQuery = Ember.Object.create({
-          parameter,
+          parameter: Ember.Object.create(parameter),
           value: this.get(`query.${key}`)
         });
         searchQuery.parameters = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameters);
@@ -89,7 +90,7 @@ export default Ember.Component.extend({
         return;
       }
       let searchQuery = Ember.Object.create({
-        parameter,
+        parameter: Ember.Object.create(parameter),
         value: '',
       });
       searchQuery.parameter = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameter);
@@ -97,7 +98,7 @@ export default Ember.Component.extend({
       this.set('addingNewSearchQuery', true);
     },
     setParameterToQuery(parameter, searchQuery){
-      searchQuery.set('parameter', parameter);
+      searchQuery.set('parameter', Ember.Object.create(parameter));
     },
     setValueToQuery(value, searchQuery){
       searchQuery.set('value', value);
@@ -112,7 +113,7 @@ export default Ember.Component.extend({
         return;
       }
       
-      if(!isNewParameter){
+      if(isNewParameter === false){
         if (!searchQuery.value){
           this.get('searchQueries').removeObject(searchQuery);
         }

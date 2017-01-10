@@ -6,13 +6,19 @@
 					{{searchQuery.parameter.title}} : 
 				</div>
 				<div class="search-flow_value">
-					{{search-flow/input-dropdown value=searchQuery.value searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
+					{{search-flow/input-dropdown searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
 				</div>
 				<div class="search-flow_remove" {{action 'removeSearchQuery' searchQuery}}></div>
 			</div>
 		{{else}}
 			<div class="search-flow_parameter_input">
-				{{search-flow/input-dropdown value=newParameter parameters=availableParameters searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
+				{{search-flow/input-dropdown 
+					value=newParameter 
+					parameters=parameters
+					availableParameters=availableParameters 
+					searchQuery=searchQuery 
+					inputBlurred=(action 'inputBlurred') 
+					inputFocused=(action 'inputBlurred')}}
 			</div>
 		{{/if}}
 	{{/each}}
