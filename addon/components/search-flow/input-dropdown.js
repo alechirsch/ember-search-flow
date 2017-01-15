@@ -185,10 +185,6 @@ export default Ember.Component.extend({
       if (this.$('.search-flow_dropdown-option:hover').length || this.get('didHitEnter')) {
         return;
       }
-      // else if (Ember.$('.search-flow_remove:hover').length) {
-      //   this.focusInput();
-      //   return;
-      // }
 
       if (this.get('filter.isFocused') && !this.get('shouldRemoveFilter')) {
         this.set('filter.isFocused', false);
