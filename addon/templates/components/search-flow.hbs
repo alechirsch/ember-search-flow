@@ -8,7 +8,6 @@
 				{{search-flow/input-dropdown
 					remoteFiltering=filter.parameter.remoteOptions
 					options=filter.parameter.options
-					value=filter.value
 					placeholder=filter.parameter.placeholder
 					filter=filter
 					inputBlurred=(action 'inputBlurred')
@@ -20,7 +19,6 @@
 	{{#if isSelectingParameter}}
 		<div class="search-flow_parameter_input">
 			{{search-flow/input-dropdown
-				value=""
 				options=availableParameters
 				localFiltering=true
 				isParameterSelection=true

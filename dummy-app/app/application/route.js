@@ -4,14 +4,17 @@ export default Ember.Route.extend({
 	model(){
 		return {
 			query: {
-				name: 'Bob'
+				name: ['Sue', 'Bob'],
+				contains: {
+					name: ['b', 'll']
+				}
 			},
 			nameOptions: ['Bill', 'Bob', 'Sally', 'Sue'],
 			parameters: [
 				{
 					name: 'name',
 					title: 'Name',
-					type: 'contains',
+					contains: true,
 					placeholder: 'Enter name',
 					remoteOptions: true,
 				},
