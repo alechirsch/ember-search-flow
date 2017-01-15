@@ -13,7 +13,6 @@ export default Ember.Route.extend({
 					title: 'Name',
 					type: 'contains',
 					placeholder: 'Enter name',
-					allowMultiple: true,
 					remoteOptions: true,
 				},
 				{
@@ -28,9 +27,9 @@ export default Ember.Route.extend({
 		};
 	},
 	actions: {
-		searchFlowValueUpdated(searchQuery){
-			searchQuery.set('parameter.options', this.currentModel.nameOptions.filter(option => {
-				return option.toLowerCase().includes(searchQuery.get('value').toLowerCase());
+		searchFlowValueUpdated(filter){
+			filter.set('parameter.options', this.currentModel.nameOptions.filter(option => {
+				return option.toLowerCase().includes(filter.get('value').toLowerCase());
 			}));
 		}
 	}

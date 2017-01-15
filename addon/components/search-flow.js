@@ -10,10 +10,10 @@ export default Ember.Component.extend({
   },
   init(){
     this._super(...arguments);
-    this.set('searchQueries', Ember.A([]));
+    this.set('filters', Ember.A([]));
     this.processQueries(this.get('query'));
     this.set('newParameter', '');
-    this.set('addingNewSearchQuery', false);
+    this.set('isSelectingParameter', false);
   },
   getParameter(parameter){
     return this.get('parameters').find(param => {
@@ -25,23 +25,23 @@ export default Ember.Component.extend({
       this.set('queryGeneretedByComponent', false);
       return;
     }
-    let searchQueries = this.get('searchQueries');
+    let filters = this.get('filters');
     Object.keys(this.get('query')).forEach(key => {
       let parameter = this.getParameter(key);
       if(parameter){
-        let searchQuery = Ember.Object.create({
+        let filter = Ember.Object.create({
           parameter: Ember.Object.create(parameter),
           value: this.get(`query.${key}`)
         });
-        searchQuery.parameters = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameters);
-        searchQueries.pushObject(searchQuery);
+        filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
+        filters.pushObject(filter);
       }
     });
   }),
-  availableParameters: Ember.computed('parameters,searchQueries.[],searchQueries.@each.parameter', function(){
+  availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter', function(){
     return this.get('parameters').reject(parameter => {
-      return parameter.allowMultiple === false && this.get('searchQueries').find(searchQuery => { 
-        return searchQuery.get('parameter.name') === parameter.name;
+      return parameter.allowMultiple === false && this.get('filters').find(filter => { 
+        return filter.get('parameter.name') === parameter.name;
       });
     });
   }),
@@ -53,76 +53,73 @@ export default Ember.Component.extend({
   },
   generateQuery(){
     let query = {};
-    this.get('searchQueries').forEach(searchQuery => {
-      let queryItem = query[searchQuery.parameter.name];
+    this.get('filters').forEach(filter => {
+      let queryItem = query[filter.parameter.name];
       if (queryItem){
         if (!Ember.isArray(queryItem)){
-          if (queryItem === searchQuery.value){
+          if (queryItem === filter.value){
             return;
           }
           queryItem = [queryItem];
         }
-        if (queryItem.includes(searchQuery.value)){
+        if (queryItem.includes(filter.value)){
           return;
         }
-        queryItem.push(searchQuery.value);
-        query[searchQuery.parameter.name] = queryItem;
+        queryItem.push(filter.value);
+        query[filter.parameter.name] = queryItem;
       }
       else {
-        query[searchQuery.parameter.name] = searchQuery.value;
+        query[filter.parameter.name] = filter.value;
       }
     });
 
     this.set('queryGeneretedByComponent', true);
     this.set('query', query);
   },
+  canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused', function(){
+    if (this.get('isSelectingParameter')){
+      return false;
+    }
+    return !this.get('filters').isAny('isFocused');
+  }),
   actions: {
-    newSearchQuery(){
-      let searchQuery = Ember.Object.create({
-        value: ''
-      });
-      this.get('searchQueries').pushObject(searchQuery);
-      this.set('newParameter', '');
-      this.set('addingNewSearchQuery', true);
+    newFilter(){
+      if (event.which === 13){ // Enter key
+        // Must prevent the filter from auto selecting an option
+        this.set('didHitEnter', true);
+      }
+      this.set('isSelectingParameter', true);
     },
-    newSearchQueryWithParameter(parameter){
+    newFilterWithParameter(parameter){
       if(!this.isParameterAvailable(parameter)){
         return;
       }
-      let searchQuery = Ember.Object.create({
+      let filter = Ember.Object.create({
         parameter: Ember.Object.create(parameter),
         value: '',
       });
-      searchQuery.parameter = Ember.assign({}, this.get('defaultParameterValues'), searchQuery.parameter);
-      this.get('searchQueries').pushObject(searchQuery);
-      this.set('addingNewSearchQuery', true);
+      filter.parameter = Ember.assign({}, this.get('defaultParameterValues'), filter.parameter);
+      this.get('filters').pushObject(filter);
+      this.set('isSelectingParameter', false);
     },
-    setParameterToQuery(parameter, searchQuery){
-      searchQuery.set('parameter', Ember.Object.create(parameter));
+    setParameterToFilter(parameter, filter){
+      filter.set('parameter', Ember.Object.create(parameter));
     },
-    setValueToQuery(value, searchQuery){
-      searchQuery.set('value', value);
-      this.set('addingNewSearchQuery', false);
-    },
-    removeSearchQuery(query){
-      this.get('searchQueries').removeObject(query);
+    removeFilter(query){
+      this.get('filters').removeObject(query);
       this.generateQuery();
     },
-    inputBlurred(searchQuery, isNewParameter){
-      if(!searchQuery){
+    inputBlurred(isNewParameter, filter){
+      if(isNewParameter){
+        this.set('isSelectingParameter', false);
         return;
       }
       
-      if(isNewParameter === false){
-        if (!searchQuery.value){
-          this.get('searchQueries').removeObject(searchQuery);
-        }
-        this.set('addingNewSearchQuery', false);
-        this.generateQuery();
+      if (!filter.value){
+        this.get('filters').removeObject(filter);
       }
+      this.set('addingNewfilter', false);
+      this.generateQuery();
     },
-    inputFocused(){
-      this.set('addingNewSearchQuery', true);
-    }
   }
 });

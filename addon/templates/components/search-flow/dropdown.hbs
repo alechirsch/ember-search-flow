@@ -1,0 +1,18 @@
+<div class="search-flow_dropdown-caret"></div>
+{{#if hasNoOption}}
+	<div class="search-flow_dropdown-no-results">
+		No Results...
+	</div>
+{{else}}
+	{{#each options as |option|}}
+		<div 
+			class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
+			{{action 'optionClicked'}}
+			{{action 'optionHovered' option on="mouseEnter"}}
+		>
+		
+			{{option.title}}
+		</div>
+	{{/each}}
+{{/if}}
+{{yield}}

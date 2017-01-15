@@ -1,36 +1,46 @@
 <div class="search-flow_queries">
-	{{#each searchQueries as |searchQuery|}}
-		{{#if searchQuery.parameter}}
-			<div class="search-flow_search-query">
-				<div class="search-flow_title">
-					{{searchQuery.parameter.title}} : 
-				</div>
-				<div class="search-flow_value">
-					{{search-flow/input-dropdown searchQuery=searchQuery inputBlurred=(action 'inputBlurred') inputFocused=(action 'inputBlurred')}}
-				</div>
-				<div class="search-flow_remove" {{action 'removeSearchQuery' searchQuery}}></div>
+	{{#each filters as |filter|}}
+		<div class="search-flow_search-query">
+			<div class="search-flow_title">
+				{{filter.parameter.title}} : 
 			</div>
-		{{else}}
-			<div class="search-flow_parameter_input">
-				{{search-flow/input-dropdown 
-					value=newParameter 
-					parameters=parameters
-					availableParameters=availableParameters 
-					searchQuery=searchQuery 
-					inputBlurred=(action 'inputBlurred') 
-					inputFocused=(action 'inputBlurred')}}
+			<div class="search-flow_value">
+				{{search-flow/input-dropdown
+					remoteFiltering=filter.parameter.remoteOptions
+					options=filter.parameter.options
+					value=filter.value
+					placeholder=filter.parameter.placeholder
+					filter=filter
+					inputBlurred=(action 'inputBlurred')
+				}}
 			</div>
-		{{/if}}
+			<div class="search-flow_remove" {{action 'removeFilter' filter}}></div>
+		</div>
 	{{/each}}
-	{{#unless addingNewSearchQuery}}
-		<button class="search-flow_add" {{action 'newSearchQuery'}}>
-			Add Filters
-		</button>
-	{{/unless}}
+	{{#if isSelectingParameter}}
+		<div class="search-flow_parameter_input">
+			{{search-flow/input-dropdown
+				value=""
+				options=availableParameters
+				localFiltering=true
+				isParameterSelection=true
+				didHitEnter=didHitEnter
+				inputBlurred=(action 'inputBlurred')
+				newFilter=(action 'newFilterWithParameter')
+			}}
+		</div>
+	{{/if}}
+	{{#if canAddNewFilter}}
+		{{#if availableParameters.length}}
+			<button class="search-flow_add" {{action 'newFilter'}}>
+				Add Filters
+			</button>
+		{{/if}}
+	{{/if}}
 </div>
 <div class="search-flow_parameters">
 	{{#each availableParameters as |parameter|}}
-		<div class="search-flow_parameter" {{action 'newSearchQueryWithParameter' parameter}}>
+		<div class="search-flow_parameter" {{action 'newFilterWithParameter' parameter}}>
 			{{parameter.title}}
 		</div>
 	{{/each}}
