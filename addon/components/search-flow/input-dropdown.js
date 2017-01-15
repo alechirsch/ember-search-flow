@@ -123,11 +123,15 @@ export default Ember.Component.extend({
         this.get('newFilter')(activeOption.get('value'));
       }
       else {
-        this.set('value', activeOption.get('value'));
+        
         this.set('filter.value', activeOption.get('value'));
         if (activeOption.get('isContains')) {
           this.set('filter.isContains', true);
           this.set('value', `Contains: ${activeOption.get('value')}`);
+        }
+        else {
+          this.set('filter.isContains', false);
+          this.set('value', activeOption.get('value'));
         }
       }
       this.blurInput();
@@ -194,6 +198,7 @@ export default Ember.Component.extend({
           this.set('value', `Contains: ${this.get('activeOption.value')}`);
         }
         else {
+          this.set('filter.isContains', false);
           this.set('value', this.get('activeOption.value'));
         }
       }
