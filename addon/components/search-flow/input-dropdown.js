@@ -138,7 +138,7 @@ export default Ember.Component.extend({
       this.get('inputBlurred')(this.get('isParameterSelection'), this.get('filter'));
     },
     inputEntered() {
-      // Ensure item is not selected from preivous enter key hit from 'Add Filter' button
+      // Ensure item is not selected from previous enter key hit from 'Add Filter' button
       if (!this.get('didHitEnter') && !!this.get('activeOption')) {
         this.set('didHitEnter', true);
         this.send('selectOption', this.get('activeOption'));
