@@ -186,21 +186,14 @@ export default Ember.Component.extend({
     },
     inputBlurred() {
       // Ensure the filter is not removed with clicking on an option
-      if (this.$('.search-flow_dropdown-option:hover').length || this.get('didHitEnter')) {
+      if ((this.$('.search-flow_dropdown-option:hover').length || this.get('didHitEnter')) && !this.get('shouldRemoveFilter')) {
         return;
       }
 
-      if (this.get('filter.isFocused') && !this.get('shouldRemoveFilter')) {
-        this.set('filter.isFocused', false);
-        this.set('filter.value', this.get('activeOption.value'));
-        if (this.get('activeOption.isContains')) {
-          this.set('filter.isContains', true);
-          this.set('value', `Contains: ${this.get('activeOption.value')}`);
-        }
-        else {
-          this.set('filter.isContains', false);
-          this.set('value', this.get('activeOption.value'));
-        }
+      // Set the value to what the original filter value was
+      this.set('filter.isFocused', false);
+      if (this.get('filter.isContains')) {  
+        this.set('value', `Contains: ${this.get('filter.value')}`);
       }
       this.get('inputBlurred')(this.get('isParameterSelection'), this.get('filter'));
     }
