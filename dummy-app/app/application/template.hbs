@@ -3,4 +3,8 @@
     obj=model.query
     shouldHighlight=true
 }}
+{{textarea value=(mut model.newParameters) rows="25" cols="100"}}
+<button {{action 'changeParameters'}}>Change Parameters</button>
+{{textarea value=(mut model.newQuery) rows="15" cols="100"}}
+<button {{action 'changeQuery'}}>Change Query</button>
 {{outlet}}

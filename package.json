@@ -38,7 +38,9 @@
     "ember-resolver": "^2.0.3",
     "ember-welcome-page": "^1.0.3",
     "eslint": "^3.13.1",
-    "loader.js": "^4.0.10"
+    "glob": "^4.5.3",
+    "loader.js": "^4.0.10",
+    "morgan": "^1.7.0"
   },
   "keywords": [
     "ember-addon"
@@ -49,6 +51,7 @@
     "ember-cli-sass": "^6.1.0"
   },
   "ember-addon": {
-    "configPath": "tests/dummy/config"
+    "configPath": "tests/dummy/config",
+    "demoURL": "https://alechirsch.github.io/ember-search-flow/"
   }
 }

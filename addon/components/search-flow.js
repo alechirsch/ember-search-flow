@@ -10,9 +10,7 @@ export default Ember.Component.extend({
   },
   init() {
     this._super(...arguments);
-    this.set('filters', Ember.A([]));
-    this.processQueries(this.get('query'));
-    this.set('newParameter', '');
+    this.processQueries();
     this.set('isSelectingParameter', false);
   },
   getParameter(parameter) {
@@ -20,12 +18,15 @@ export default Ember.Component.extend({
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
-  processQueries: Ember.observer('query', function () {
+  // parametersUpdated: Ember.observer('parameters', function(){
+  //   this.processQueries();
+  // }),
+  processQueries: Ember.observer('query,parameters', function () {
     if (this.get('queryGeneretedByComponent')) {
       this.set('queryGeneretedByComponent', false);
       return;
     }
-    let filters = this.get('filters');
+    let filters = this.set('filters', Ember.A([]));
     /// THIS MUST BE REFACTORED
     Object.keys(this.get('query')).forEach(key => {
       if (key === 'contains') {
