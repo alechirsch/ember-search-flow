@@ -69,7 +69,13 @@
 }
 
 .search-flow_add:focus {
-    outline: none;
+    //outline: none;
+}
+
+.search-flow_add.search-flow_add-hidden {
+    opacity: 0;
+    width: 0;
+    pointer-events: none;
 }
 
 .search-flow_input {

@@ -28,12 +28,10 @@
 			}}
 		</div>
 	{{/if}}
-	{{#if canAddNewFilter}}
-		{{#if availableParameters.length}}
-			<button class="search-flow_add" {{action 'newFilter'}}>
-				Add Filters
-			</button>
-		{{/if}}
+	{{#if availableParameters.length}}
+		<button class="search-flow_add{{unless canAddNewFilter ' search-flow_add-hidden'}}" {{action 'newFilter'}}>
+			Add Filters
+		</button>
 	{{/if}}
 </div>
 <div class="search-flow_parameters">
