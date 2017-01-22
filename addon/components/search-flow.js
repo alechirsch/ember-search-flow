@@ -18,73 +18,40 @@ export default Ember.Component.extend({
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
-  // parametersUpdated: Ember.observer('parameters', function(){
-  //   this.processQueries();
-  // }),
   processQueries: Ember.observer('query,parameters', function () {
     if (this.get('queryGeneretedByComponent')) {
       this.set('queryGeneretedByComponent', false);
       return;
     }
     let filters = this.set('filters', Ember.A([]));
-    /// THIS MUST BE REFACTORED
     Object.keys(this.get('query')).forEach(key => {
+      let keys = [key];
+      let isContains = false;
       if (key === 'contains') {
-        Object.keys(this.get('query.contains')).forEach(key => {
-          if (Ember.isArray(this.get(`query.contains.${key}`))) {
-            this.get(`query.contains.${key}`).forEach(value => {
-              let parameter = this.getParameter(key);
-              if (parameter) {
-                let filter = Ember.Object.create({
-                  parameter: Ember.Object.create(parameter),
-                  value,
-                  isContains: true
-                });
-                filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
-                filters.pushObject(filter);
-              }
-            });
-          }
-          else {
-            let parameter = this.getParameter(key);
-            if (parameter) {
-              let filter = Ember.Object.create({
-                parameter: Ember.Object.create(parameter),
-                value: this.get(`query.contains.${key}`),
-                isContains: true
-              });
-              filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
-              filters.pushObject(filter);
-            }
-          }
-        });
+        keys = Object.keys(this.get('query.contains'));
+        isContains = true;
       }
-      else {
-        if (Ember.isArray(this.get(`query.${key}`))) {
-          this.get(`query.${key}`).forEach(value => {
-            let parameter = this.getParameter(key);
-            if (parameter) {
-              let filter = Ember.Object.create({
-                parameter: Ember.Object.create(parameter),
-                value
-              });
-              filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
-              filters.pushObject(filter);
-            }
-          });
+
+      keys.forEach(key => {
+        let values = this.get(`query${isContains ? '.contains' : ''}.${key}`);
+        if (!Ember.isArray(values)) {
+          values = [values];
         }
-        else {
+        values.forEach(value => {
           let parameter = this.getParameter(key);
-          if (parameter) {
+          if (parameter && (!isContains || (isContains && parameter.contains))) {
             let filter = Ember.Object.create({
               parameter: Ember.Object.create(parameter),
-              value: this.get(`query.${key}`)
+              value
             });
+            if (isContains){
+              filter.set('isContains', true);
+            }
             filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
             filters.pushObject(filter);
           }
-        }
-      }
+        });
+      });
     });
   }),
   availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter', function () {

@@ -1,4 +1,4 @@
-{{search-flow parameters=model.parameters query=model.query}}
+{{search-flow parameters=model.parameters query=model.query onValueUpdated=(action send 'onValueUpdated')}}
 {{json-pretty
     obj=model.query
     shouldHighlight=true

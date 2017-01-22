@@ -12,6 +12,9 @@ export default Ember.Component.extend({
     }
     else {
       this.set('value', '');
+      if (!this.get('isParameterSelection')){
+        this.set('filter.newValue', '');
+      }
     }
     Ember.run.schedule('afterRender', this, function () {
       if (!this.get('value')) {
@@ -29,23 +32,13 @@ export default Ember.Component.extend({
   getCurrentRoute() {
     return Ember.getOwner(this).lookup(`route:${this.get('router.currentRouteName')}`);
   },
-  sendActionToRoute(action, arg) {
-    try {
-      this.getCurrentRoute().send(action, arg);
-    }
-    catch (error) {
-      // The action does not exist
-      return;
-    }
-  },
   fetchOptions() {
     if (this.get('remoteFiltering')) {
-      this.sendActionToRoute('searchFlowValueUpdated', this.get('filter'));
+      this.get('onValueUpdated')(this.get('value'), this.get('filter'));
     }
   },
   valueObserver: Ember.observer('value', function () {
     if (this.get('filter.isFocused')) {
-      this.set('filter.value', this.get('value'));
       this.fetchOptions();
     }
     this.setInputWidth();
