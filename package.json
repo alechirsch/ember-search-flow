@@ -1,6 +1,6 @@
 {
   "name": "ember-search-flow",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "Multi-faceted search for ember.",
   "directories": {
     "doc": "doc",
