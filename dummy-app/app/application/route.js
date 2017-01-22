@@ -13,10 +13,7 @@ let parameters = [
 		title: 'Name',
 		contains: true,
 		placeholder: 'Enter name',
-		remoteOptions: function(parameter){
-			Ember.set(parameter, 'options', 'results of DB call');
-		},
-
+		remoteOptions: true
 	},
 	{
 		name: 'status',
@@ -38,9 +35,9 @@ export default Ember.Route.extend({
 		};
 	},
 	actions: {
-		onValueUpdated(newValue, filter){
-			filter.set('parameter.options', this.currentModel.nameOptions.filter(option => {
-				return option.toLowerCase().includes(newValue.toLowerCase());
+		onValueUpdated(value, parameter){
+			Ember.set(parameter, 'options', this.currentModel.nameOptions.filter(option => {
+				return option.toLowerCase().includes(value.toLowerCase());
 			}));
 		},
 		changeQuery(){

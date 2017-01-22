@@ -12,9 +12,6 @@ export default Ember.Component.extend({
     }
     else {
       this.set('value', '');
-      if (!this.get('isParameterSelection')){
-        this.set('filter.newValue', '');
-      }
     }
     Ember.run.schedule('afterRender', this, function () {
       if (!this.get('value')) {
@@ -34,7 +31,7 @@ export default Ember.Component.extend({
   },
   fetchOptions() {
     if (this.get('remoteFiltering')) {
-      this.get('onValueUpdated')(this.get('value'), this.get('filter'));
+      this.get('onValueUpdated')(this.get('value'), this.get('filter.parameter'));
     }
   },
   valueObserver: Ember.observer('value', function () {

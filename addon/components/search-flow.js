@@ -6,7 +6,8 @@ export default Ember.Component.extend({
   classNames: ['search-flow'],
   defaultParameterValues: {
     allowMultiple: true,
-    remoteOptions: false
+    remoteOptions: false,
+    contains: false
   },
   init() {
     this._super(...arguments);
