@@ -18,8 +18,8 @@
   "author": "Alec Hirsch",
   "license": "MIT",
   "bugs": {
-    "url" : "https://github.com/owner/project/issues",
-    "email" : "project@hostname.com"
+    "url": "https://github.com/owner/project/issues",
+    "email": "project@hostname.com"
   },
   "devDependencies": {
     "broccoli-asset-rev": "^2.4.5",
@@ -46,6 +46,7 @@
     "morgan": "^1.7.0"
   },
   "dependencies": {
+    "ember-cli-autoprefixer": "^0.6.0",
     "ember-cli-babel": "^5.1.7",
     "ember-cli-htmlbars": "^1.0.10",
     "ember-cli-sass": "^6.1.0"
