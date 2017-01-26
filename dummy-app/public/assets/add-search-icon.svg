@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg width="44px" height="44px" viewBox="0 0 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+    <!-- Generator: Sketch 42 (36781) - http://www.bohemiancoding.com/sketch -->
+    <title>add-search-icon</title>
+    <desc>Created with Sketch.</desc>
+    <defs></defs>
+    <g id="Page-1" stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+        <path d="M19,36.001 C9.611,36.001 2,28.389 2,19 C2,9.611 9.611,2 19,2 C28.389,2 36,9.611 36,19 C36,28.389 28.389,36.001 19,36.001 Z M43.707,42.293 L33.108,31.694 C36.14,28.328 38,23.887 38,19 C38,8.507 29.494,0 19,0 C8.507,0 0,8.507 0,19 C0,29.494 8.507,38 19,38 C23.887,38 28.328,36.14 31.694,33.108 L42.293,43.707 C42.474,43.889 42.724,44 43,44 C43.553,44 44,43.553 44,43 C44,42.725 43.889,42.475 43.707,42.293 Z M28,18 L20,18 L20,10 C20,9.448 19.553,9 19,9 C18.447,9 18,9.448 18,10 L18,18 L10,18 C9.447,18 9,18.448 9,19 C9,19.553 9.447,20 10,20 L18,20 L18,28 C18,28.553 18.447,29 19,29 C19.553,29 20,28.553 20,28 L20,20 L28,20 C28.553,20 29,19.553 29,19 C29,18.448 28.553,18 28,18 L28,18 Z" id="add-search-icon" fill="#3B71AA"></path>
+    </g>
+</svg>

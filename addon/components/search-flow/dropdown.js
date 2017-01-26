@@ -3,7 +3,7 @@ import layout from '../../templates/components/search-flow/dropdown';
 
 export default Ember.Component.extend({
   layout,
-  classNames: ['search-flow_dropdown'],
+  classNames: ['search-flow_dropdown__bg'],
   hasNoOption: Ember.computed('options', function(){
     return this.get('options.length') === 0;
   }),
