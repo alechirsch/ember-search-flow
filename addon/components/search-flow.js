@@ -134,13 +134,13 @@ export default Ember.Component.extend({
       this.get('filters').removeObject(query);
       this.generateQuery();
     },
-    inputBlurred(isNewParameter, filter) {
+    inputBlurred(isNewParameter, filter, shouldRemoveFilter) {
       if (isNewParameter) {
         this.set('isSelectingParameter', false);
         return;
       }
 
-      if (!filter.value) {
+      if (!filter.value || shouldRemoveFilter) {
         this.get('filters').removeObject(filter);
       }
       this.set('addingNewfilter', false);
