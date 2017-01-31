@@ -7,8 +7,7 @@ module.exports = {
   },
   options: {
     autoprefixer: {
-      browsers: ['last 2 ios version'],
-      cascade: false
+      browsers: ['last 2 versions']
     }
   },
   afterInstall: function() {
