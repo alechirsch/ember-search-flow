@@ -40,6 +40,10 @@ export default Ember.Route.extend({
 				return option.toLowerCase().includes(value.toLowerCase());
 			}));
 		},
+		onQueryUpdated(){
+			//Ember.get(this.currentModel, 'query') is updated with value in search-flow's generateQuery
+			return;
+		},
 		changeQuery(){
 			Ember.set(this.currentModel, 'query', JSON.parse(this.currentModel.newQuery));
 		},
