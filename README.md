@@ -43,6 +43,7 @@ A query for filterting all on names that contain the letter "b":
 ### Parameters
 Parameters is an array of objects that define what filters can be added to the query.
 Each object in the array is defined with the following options
+
 | Key | Required | Description |
 |-------|----------|-------------|
 | name | yes | The key of the filter in the query |
