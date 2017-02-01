@@ -45,6 +45,7 @@
     "morgan": "^1.7.0"
   },
   "dependencies": {
+    "ember-cli-autoprefixer": "^0.6.0",
     "ember-cli-babel": "^5.1.7",
     "ember-cli-htmlbars": "^1.0.10",
     "ember-cli-sass": "^6.1.0"

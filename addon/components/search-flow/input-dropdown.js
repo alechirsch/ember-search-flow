@@ -185,7 +185,7 @@ export default Ember.Component.extend({
       if (this.get('filter.isContains')) {  
         this.set('value', `Contains: ${this.get('filter.value')}`);
       }
-      this.get('inputBlurred')(this.get('isParameterSelection'), this.get('filter'));
+      this.get('inputBlurred')(this.get('isParameterSelection'), this.get('filter'), this.get('shouldRemoveFilter'));
     }
   }
 });

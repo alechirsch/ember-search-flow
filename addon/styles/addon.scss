@@ -1,151 +1,185 @@
+@import "variables",
+        "mixins";
+
+// Structure
+
+
 .search-flow {
     display: block;
-    border-radius: 10px;
-    border: 1px solid #61a8bd;
-    padding: 10px;
+    font-family: -apple-system, 
+            BlinkMacSystemFont, 
+            "Segoe UI", 
+            Roboto, 
+            Oxygen-Sans, 
+            Ubuntu, 
+            Cantarell, 
+            "Helvetica Neue", 
+            sans-serif;
+    font-size: 12px;
+}
+
+.search-flow {
+    * {
+        box-sizing: border-box;
+    }
 }
 
 .search-flow_parameters {
-    padding: 5px;
+    padding: 4px;
 }
 
 .search-flow_parameter {
     display: inline-block;
-    margin-right: 10px;
-    background-color: #ece6e6;
-    border-radius: 10px;
-    padding: 5px;
+    margin-left: 4px;
+    background-color: rgba(0,0,0, 0.05);
+    border-radius: 4px;
+    padding: 4px;
     cursor: pointer;
+
+    &:hover {
+        background-color: rgba(0,0,0, 0.10);
+    }
+}
+
+.search-flow_parameter_input {
+    padding: 2px;
+
+    .search-flow_input {
+        color: #000;
+    }
+    .search-flow_dropdown__bg {
+        transform: translateX(0);
+    }
 }
 
 .search-flow_queries {
-    min-height: 35px;
+    display: flex;
+    flex-direction: $vertical-layout;
+    flex-wrap: wrap;
 }
 
-.search-flow_select-parameter {
-    display: inline-block;
-    position: absolute;
-    padding: 5px;
-}
+.search-flow__query {
+    height: 28px;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    padding: 0 12px;
+    background-color: $cobaltBlue;
+    border-radius: 50px;
+    line-height: 28px;
+    color: #FFF;
 
-.search-flow_search-query {
-    height: 22px;
-    padding: 3px 10px;
-    background-color: #2185d0;
-    display: inline-block;
-    border-radius: 14px;
-}
+    &-title {
+        display: inline-block;
+        margin-right: 4px;
+    }
 
-.search-flow_title {
-    color: #d4d4d4;
-    float: left;
-    padding: 2px;
-    margin-right: 5px;
-}
+    &-value {
+        display: inline-block;
+        color: #fff;
+    }
 
-.search-flow_value {
-    float: left;
-    color: #fff;
-}
-
-.search-flow_remove {
-    float: left;
-    padding: 2px 5px 2px 10px;
-}
-
-.search-flow_remove:after {
-    content: '\00d7';
-    cursor: pointer;
+    &-remove {
+        display: inline-block;
+        
+        &:after {
+            content: '\00d7';
+            cursor: pointer;
+        }
+    }
 }
 
 .search-flow_add {
-    display: inline-block;
-    position: absolute;
-    padding: 5px;
-    background: none;
+    display: flex;
+    align-items: center;
+    flex-wrap: nowrap;
+    height: 28px;
+    min-width: 100px;
+    margin-bottom: 4px;
+    padding: 0 8px;
     border: none;
+    background: none;
     font: inherit;
+    line-height: 28px;
     cursor: pointer;
-}
 
-.search-flow_add:focus {
-    //outline: none;
-}
+    :focus,
+    :active {
+        outline: none;
+    }
 
-.search-flow_add.search-flow_add-hidden {
-    opacity: 0;
-    width: 0;
-    pointer-events: none;
+    &.search-flow_add-hidden {
+        opacity: 0;
+        width: 0;
+        height: 0;
+        margin: 0;
+        pointer-events: none;
+    }
+
+    .add-icon {
+        height: 18px;
+        width: 18px;
+        margin-right: 4px;
+    }
 }
 
 .search-flow_input {
     background: none;
     border: none;
     font: inherit;
-    display: inline-block;
     color: #fff;
-    width: 5px;
-    padding: 2px;
+    width: 4px;
+    padding: 0;
+    
+    &:focus {
+        border: none;
+        outline: 0;
+    }
+    &::-webkit-input-placeholder {
+        color: rgba(255, 255, 255, .75);
+    }
 }
 
-.search-flow_input::-webkit-input-placeholder {
-    color: #d2cfcf;
-}
-
-.search-flow_input:focus {
-    border: none;
-    outline: 0;
-}
-
-.search-flow_parameter_input {
-    display: inline-block;
+.search-flow_dropdown__bg {
     position: absolute;
-    padding: 2px;
+    background: #fff;
+    margin-top: 8px;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px;
+    box-shadow: 0 2px 1px rgba(193, 193, 193, 0.32);
+    transform: translateX(-12px);
 }
 
-.search-flow_parameter_input .search-flow_input {
-    color: #000;
+.search-flow_dropdown__arrow {
+    position: absolute;
+    top: -6px;
+    left: 12px;
+    width: 12px;
+    height: 12px;
+    transform: rotate(45deg);
+    border: 1px solid rgba(0, 0, 0, 0.05);
+    border-radius: 4px 0 0 0;
+    background: #fff;
 }
 
 .search-flow_dropdown {
-    position: absolute;
-    margin-top: 8px;
-    width: 100px;
-    max-height: 400px;
+    position: relative;
     background: #fff;
-    border: 1px solid #eee;
-    box-shadow: rgba(193, 193, 193, 0.64) 1px 2px 1px 0px;
-    border-radius: 5px;
+    padding: 4px;
+    min-width: 100px;
+    max-height: 400px;
+    border-radius: 4px;
 }
-.search-flow_dropdown-option, .search-flow_dropdown-no-results {
+
+.search-flow_dropdown-option, 
+.search-flow_dropdown-no-results {
     color: #000;
-    padding: 5px;
+    border-radius: 2px;
+    padding: 4px;
+    line-height: 16px;
+    cursor: pointer;
 }
 
 .search-flow_dropdown-option-active {
-    background-color: #2185d0;
-    color: #fff
+    background-color: $cobaltBlue;
+    color: #fff;
 }
-
-.search-flow_dropdown:after{
-    border-left: 5px solid transparent;
-    border-right: 5px solid transparent;
-    border-bottom: 5px solid #d4d4d4;
-    top: -5px;
-    content: '';
-    left: 15px;
-    margin-left: -5px;
-    position: absolute;
-}
-
-/* Styling for second triangle (border) 
-
-.search-flow_dropdown:before {
-    border-left: 23px solid transparent;
-    border-right: 23px solid transparent;
-    border-bottom: 23px solid;
-    border-top-color: inherit;
-    top: -23px;
-    margin-left: -23px;
-}
-*/
