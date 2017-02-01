@@ -9,7 +9,7 @@ See the demo at [https://alechirsch.github.io/ember-search-flow/](https://alechi
 ## Usage
 Once installed, include the component in any template
 ```
-{{search-flow parameters=parameters query=query onValueUpdated=(action 'onValueUpdated')}}
+{{search-flow parameters=parameters query=query onQueryUpdated=(action 'onQueryUpdated') onValueUpdated=(action 'onValueUpdated')}}
 ```
 
 ### Query
