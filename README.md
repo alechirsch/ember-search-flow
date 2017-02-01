@@ -9,7 +9,7 @@ See the demo at [https://alechirsch.github.io/ember-search-flow/](https://alechi
 ## Usage
 Once installed, include the component in any template
 ```
-{{search-flow parameters=parameters query=query onValueUpdated=(action 'onValueUpdated')}}
+{{search-flow parameters=parameters query=query onQueryUpdated=(action 'onQueryUpdated') onValueUpdated=(action 'onValueUpdated')}}
 ```
 
 ### Query
@@ -43,6 +43,7 @@ A query for filterting all on names that contain the letter "b":
 ### Parameters
 Parameters is an array of objects that define what filters can be added to the query.
 Each object in the array is defined with the following options
+
 | Key | Required | Description |
 |-------|----------|-------------|
 | name | yes | The key of the filter in the query |
@@ -77,6 +78,17 @@ onValueUpdated(value, parameter){
 	// do remote call
 	let options = // results from remote call
 	Ember.set(parameter, 'options', options);
+}
+```
+
+### onQueryUpdated
+This action is called each time ember-search-flow makes a new query from a newly selected key-value pair. Pointing this attribute to an action in a route or component enables you to listen and define behavior when filters are created or deleted.
+```
+onQueryUpdated(){
+	let newFilter = Ember.get(this.currentModel, 'query'); //the property passed to search-flow's query parameter
+	this.set('routeFilter', newFilter);
+	//refresh the route, newFilter is used by a this.store.query call to make  JSONAPI call to a resource server
+	this.refresh();
 }
 ```
 

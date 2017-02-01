@@ -100,6 +100,9 @@ export default Ember.Component.extend({
 
     this.set('queryGeneretedByComponent', true);
     this.set('query', query);
+    if (this.get('onQueryUpdated')) {
+      this.get('onQueryUpdated')();
+    }
   },
   canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused', function () {
     if (this.get('isSelectingParameter')) {
