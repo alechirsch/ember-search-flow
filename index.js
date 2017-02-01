@@ -2,9 +2,6 @@
 'use strict';
 
 module.exports = {
-  isDevelopingAddon: function() {
-    return true;
-  },
   options: {
     autoprefixer: {
       browsers: ['last 2 versions']
