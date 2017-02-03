@@ -34,7 +34,11 @@ export default Ember.Component.extend({
       }
 
       keys.forEach(key => {
-        let values = this.get(`query${isContains ? '.contains' : ''}.${key}`);
+        let values = this.get('query');
+        if (isContains){
+          values = values['contains'];
+        }
+        values = values[key];
         if (!Ember.isArray(values)) {
           values = [values];
         }
@@ -68,18 +72,28 @@ export default Ember.Component.extend({
     }
     return this.get('availableParameters').findBy('name', parameter.name);
   },
+  setOnQuery(isContains, query, path, value){
+    if (isContains){
+      query.contains[path] = value;
+    }
+    else {
+      query[path] = value;
+    }
+  },
+  getOnQuery(isContains, query, path){
+    if (isContains){
+      return query.contains[path];
+    }
+    return query[path];
+  },
   generateQuery() {
     let query = {};
     this.get('filters').forEach(filter => {
       let queryPath = filter.parameter.name;
-      if (filter.get('isContains')) {
-        if (!query.contains) {
+      if (filter.get('isContains') && !query.contains) {
           query.contains = {};
-        }
-        queryPath = `contains.${queryPath}`;
       }
-      let queryItem = Ember.get(query, queryPath);
-
+      let queryItem = this.getOnQuery(filter.get('isContains'), query, queryPath);
       if (queryItem) {
         if (!Ember.isArray(queryItem)) {
           if (queryItem === filter.value) {
@@ -91,17 +105,17 @@ export default Ember.Component.extend({
           return;
         }
         queryItem.push(filter.value);
-        Ember.set(query, queryPath, queryItem);
+        this.setOnQuery(filter.get('isContains'), query, queryPath, queryItem);
       }
       else {
-        Ember.set(query, queryPath, filter.value);
+        this.setOnQuery(filter.get('isContains'), query, queryPath, filter.value);
       }
     });
 
     this.set('queryGeneretedByComponent', true);
     this.set('query', query);
     if (this.get('onQueryUpdated')) {
-      this.get('onQueryUpdated')();
+      this.get('onQueryUpdated')(query);
     }
   },
   canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused', function () {

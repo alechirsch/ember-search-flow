@@ -84,9 +84,8 @@ onValueUpdated(value, parameter){
 ### onQueryUpdated
 This action is called each time ember-search-flow makes a new query from a newly selected key-value pair. Pointing this attribute to an action in a route or component enables you to listen and define behavior when filters are created or deleted.
 ```
-onQueryUpdated(){
-	let newFilter = Ember.get(this.currentModel, 'query'); //the property passed to search-flow's query parameter
-	this.set('routeFilter', newFilter);
+onQueryUpdated(query){
+	this.set('routeFilter', query);
 	//refresh the route, newFilter is used by a this.store.query call to make  JSONAPI call to a resource server
 	this.refresh();
 }
