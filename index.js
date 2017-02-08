@@ -14,8 +14,5 @@ module.exports = {
       ]
     });
   },
-  included: function(app) {
-    app.import('app/styles/app.css');
-  },
   name: 'ember-search-flow'
 };
