@@ -61,7 +61,7 @@ export default Ember.Component.extend({
   }),
   availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter', function () {
     return this.get('parameters').reject(parameter => {
-      return parameter.name || parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
+      return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
         return filter.get('parameter.name') === parameter.name;
       }));
     });
