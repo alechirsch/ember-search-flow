@@ -4,6 +4,7 @@ import layout from '../templates/components/search-flow';
 export default Ember.Component.extend({
   layout,
   classNames: ['search-flow'],
+  searchLabel: 'Add Filters',
   defaultParameterValues: {
     allowMultiple: true,
     remoteOptions: false,
