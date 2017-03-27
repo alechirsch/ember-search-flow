@@ -9,8 +9,17 @@ See the demo at [https://alechirsch.github.io/ember-search-flow/](https://alechi
 ## Usage
 Once installed, include the component in any template
 ```
-{{search-flow parameters=parameters query=query onQueryUpdated=(action 'onQueryUpdated') onValueUpdated=(action 'onValueUpdated')}}
+{{search-flow
+	parameters=parameters
+	query=query
+	onQueryUpdated=(action 'onQueryUpdated')
+	onValueUpdated=(action 'onValueUpdated')
+}}
 ```
+
+Options | Default Value | Description
+---|---|---
+`searchLabel` | `'Add filters'` | The text displayed next to the button to add filters
 
 ### Query
 The query is an object of filters that you can use in an ember store query
