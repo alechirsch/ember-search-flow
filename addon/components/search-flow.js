@@ -8,7 +8,9 @@ export default Ember.Component.extend({
   defaultParameterValues: {
     allowMultiple: true,
     remoteOptions: false,
-    contains: false
+    contains: false,
+    sort: true,
+    suggested: false
   },
   init() {
     this._super(...arguments);
@@ -60,12 +62,15 @@ export default Ember.Component.extend({
       });
     });
   }),
-  availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter', function () {
+  availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter,parameters.@each.suggested', function () {
     return this.get('parameters').reject(parameter => {
       return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
         return filter.get('parameter.name') === parameter.name;
       }));
     });
+  }),
+  suggestedParameters: Ember.computed('availableParameters', function(){
+    return this.get('availableParameters').filterBy('suggested');
   }),
   isParameterAvailable(parameter) {
     if (!parameter) {
@@ -147,6 +152,10 @@ export default Ember.Component.extend({
     },
     setParameterToFilter(parameter, filter) {
       filter.set('parameter', Ember.Object.create(parameter));
+    },
+    clearFilters(){
+      this.set('filters', Ember.A([]));
+      this.generateQuery();
     },
     removeFilter(query) {
       this.get('filters').removeObject(query);

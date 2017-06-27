@@ -68,10 +68,11 @@ export default Ember.Component.extend({
       });
     }
 
-    // Options should always be in alphabetical order
-    options = options.sortBy('title');
-
-
+    // Sort options in alphabetical order if the sort parameter is true
+    if (this.get('filter.parameter.sort')){
+      options = options.sortBy('title');
+    }
+    
     // Insert contains option into list
     if (this.get('filter.parameter.contains') && this.get('value') && options.length) {
       options.unshift(Ember.Object.create({ title: `Contains: ${this.get('value')}`, value: this.get('value'), isContains: true }));

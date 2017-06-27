@@ -62,6 +62,8 @@ Each object in the array is defined with the following options
 | contains | no | Default is false. This enables a filter to use the 'contains' key in the query. |
 | options | no | This is an array of strings that represents the available options for the parameter. || options | no | This is an array of strings that represents the available options for the parameter. |
 | remoteOptions | no | Default is false. If set to true, the options are remotely obtained and the onValueUpdated action will be called whenever the value of an input changes. Refer to the section about the onValueUpdated action. |
+| suggested | no | Default is false. Setting to true will place the filter into the suggested filters list. |
+| sort | no | Default is true. Setting to false will not auto sort the options list. The sort is alphabetical. |
 
 Here is an example of a parameter that does not use remote options and where a user can only input one of:
 ```

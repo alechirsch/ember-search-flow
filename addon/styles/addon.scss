@@ -88,7 +88,7 @@
     }
 }
 
-.search-flow_add {
+.search-flow_add, .search-flow_clear {
     display: flex;
     align-items: center;
     flex-wrap: nowrap;
@@ -115,11 +115,16 @@
         pointer-events: none;
     }
 
-    .add-icon {
+    .add-icon, .clear-icon {
         height: 18px;
         width: 18px;
         margin-right: 4px;
     }
+
+}
+
+.search-flow_clear {
+    margin-left: auto
 }
 
 .search-flow_input {
