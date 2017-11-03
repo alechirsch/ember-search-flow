@@ -4,7 +4,7 @@ import layout from '../templates/components/search-flow';
 export default Ember.Component.extend({
   layout,
   classNames: ['search-flow'],
-  searchLabel: 'Add Filters',
+  searchLabel: 'Add Filter',
   clearLabel: 'Clear Filters',
   maxFilters: null,
   defaultParameterValues: {
