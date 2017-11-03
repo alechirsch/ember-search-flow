@@ -41,7 +41,7 @@ export default Ember.Component.extend({
     this.setInputWidth();
   }),
   setInputWidth() {
-    let tempDiv = this.$(`<div class="search-flow_temp-div" style="display:none">${this.get('value') || this.get('placeholder')}</div>`).appendTo('body');
+    let tempDiv = Ember.$(`<div class="search-flow search-flow_option search-flow_temp-div" style="display:none">${this.get('value') || this.get('placeholder')}</div>`).appendTo('body');
     this.$('.search-flow_input').css('width', tempDiv.width() + 3);
     tempDiv.remove();
   },
