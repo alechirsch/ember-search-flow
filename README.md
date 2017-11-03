@@ -19,7 +19,9 @@ Once installed, include the component in any template
 
 Options | Default Value | Description
 ---|---|---
-`searchLabel` | `'Add filters'` | The text displayed next to the button to add filters
+`searchLabel` | `'Add Filter'` | The text displayed next to the add filter button.
+`clearLabel` | `'Clear Filters'` | The text displayed next to the clear all filters button. By default, this button will not be displayed until two or more filters are added.
+`maxFilters` | `null` | The maximum number of filters allowed to be added by the user. This will not block the number of filters manually passed in through the query object. Any non-number value will be treated as infinite.
 
 ### Query
 The query is an object of filters that you can use in an ember store query

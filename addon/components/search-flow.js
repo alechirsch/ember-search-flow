@@ -5,6 +5,8 @@ export default Ember.Component.extend({
   layout,
   classNames: ['search-flow'],
   searchLabel: 'Add Filters',
+  clearLabel: 'Clear Filters',
+  maxFilters: null,
   defaultParameterValues: {
     allowMultiple: true,
     remoteOptions: false,
@@ -23,8 +25,8 @@ export default Ember.Component.extend({
     });
   },
   processQueries: Ember.observer('query,parameters', function () {
-    if (this.get('queryGeneretedByComponent')) {
-      this.set('queryGeneretedByComponent', false);
+    if (this.get('queryGeneratedByComponent')) {
+      this.set('queryGeneratedByComponent', false);
       return;
     }
     let filters = this.set('filters', Ember.A([]));
@@ -72,6 +74,9 @@ export default Ember.Component.extend({
   suggestedParameters: Ember.computed('availableParameters', function(){
     return this.get('availableParameters').filterBy('suggested');
   }),
+  canClearAll: Ember.computed('filters.[]', function (){
+    return this.get('filters.length') > 1;
+  }),
   isParameterAvailable(parameter) {
     if (!parameter) {
       return true;
@@ -118,14 +123,17 @@ export default Ember.Component.extend({
       }
     });
 
-    this.set('queryGeneretedByComponent', true);
+    this.set('queryGeneratedByComponent', true);
     this.set('query', query);
     if (this.get('onQueryUpdated')) {
       this.get('onQueryUpdated')(query);
     }
   },
-  canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused', function () {
+  canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused,maxFilters', function () {
     if (this.get('isSelectingParameter')) {
+      return false;
+    }
+    if (typeof this.get('maxFilters') === 'number' && this.get('maxFilters') <= this.get('filters.length')){
       return false;
     }
     return !this.get('filters').isAny('isFocused');
