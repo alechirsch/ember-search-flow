@@ -64,7 +64,7 @@ export default Ember.Component.extend({
       });
     });
   }),
-  availableParameters: Ember.computed('parameters,filters.[],filters.@each.parameter,parameters.@each.suggested', function () {
+  availableParameters: Ember.computed('parameters', 'filters.[]', 'filters.@each.parameter', 'parameters.@each.suggested', function () {
     return this.get('parameters').reject(parameter => {
       return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
         return filter.get('parameter.name') === parameter.name;
@@ -129,7 +129,7 @@ export default Ember.Component.extend({
       this.get('onQueryUpdated')(query);
     }
   },
-  canAddNewFilter: Ember.computed('isSelectingParameter,filters.[],filters.@each.isFocused,maxFilters', function () {
+  canAddNewFilter: Ember.computed('isSelectingParameter', 'filters.[]', 'filters.@each.isFocused', 'maxFilters', function () {
     if (this.get('isSelectingParameter')) {
       return false;
     }
