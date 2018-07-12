@@ -24,7 +24,7 @@ export default Ember.Component.extend({
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
-  processQueries: Ember.observer('query,parameters', function () {
+  processQueries: Ember.observer('query', 'parameters', function () {
     if (this.get('queryGeneratedByComponent')) {
       this.set('queryGeneratedByComponent', false);
       return;

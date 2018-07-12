@@ -45,7 +45,7 @@ export default Ember.Component.extend({
     this.$('.search-flow_input').css('width', tempDiv.width() + 3);
     tempDiv.remove();
   },
-  availableOptions: Ember.computed('options.[],value', function () {
+  availableOptions: Ember.computed('options.[]', 'value', function () {
     let options = this.get('options');
     if (!options || !this.get('filter.isFocused')) {
       return Ember.A([]);
