@@ -45,7 +45,7 @@ export default Ember.Component.extend({
     this.$('.search-flow_input').css('width', tempDiv.width() + 3);
     tempDiv.remove();
   },
-  availableOptions: Ember.computed('options.[],value', function () {
+  availableOptions: Ember.computed('options.[]', 'value', function () {
     let options = this.get('options');
     if (!options || !this.get('filter.isFocused')) {
       return Ember.A([]);
@@ -72,7 +72,7 @@ export default Ember.Component.extend({
     if (this.get('filter.parameter.sort')){
       options = options.sortBy('title');
     }
-    
+
     // Insert contains option into list
     if (this.get('filter.parameter.contains') && this.get('value') && options.length) {
       options.unshift(Ember.Object.create({ title: `Contains: ${this.get('value')}`, value: this.get('value'), isContains: true }));
@@ -114,7 +114,7 @@ export default Ember.Component.extend({
         this.get('newFilter')(activeOption.get('value'));
       }
       else {
-        
+
         this.set('filter.value', activeOption.get('value'));
         if (activeOption.get('isContains')) {
           this.set('filter.isContains', true);
@@ -135,7 +135,7 @@ export default Ember.Component.extend({
         this.send('selectOption', this.get('activeOption'));
       }
     },
-    inputKeyDown() {
+    inputKeyDown(_, event) {
       if (event.which === 38) { // Up
         event.preventDefault();
         let previousItem = this.get(`availableOptions.${this.get('activeOption.index') - 1}`);
@@ -158,7 +158,7 @@ export default Ember.Component.extend({
         this.blurInput();
       }
     },
-    inputKeyUp() {
+    inputKeyUp(_, event) {
       // Prevent the up or down key from moving the cursor when releasing the key
       if (event.which === 38 || event.which === 40) { // Up or Down
         event.preventDefault();
@@ -183,7 +183,7 @@ export default Ember.Component.extend({
 
       // Set the value to what the original filter value was
       this.set('filter.isFocused', false);
-      if (this.get('filter.isContains')) {  
+      if (this.get('filter.isContains')) {
         this.set('value', `Contains: ${this.get('filter.value')}`);
       }
       this.get('inputBlurred')(this.get('isParameterSelection'), this.get('filter'), this.get('shouldRemoveFilter'));
