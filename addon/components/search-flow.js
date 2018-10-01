@@ -139,7 +139,7 @@ export default Ember.Component.extend({
     return !this.get('filters').isAny('isFocused');
   }),
   actions: {
-    newFilter() {
+    newFilter(event) {
       if (event.which === 13) { // Enter key
         // Must prevent the filter from auto selecting an option
         this.set('didHitEnter', true);
