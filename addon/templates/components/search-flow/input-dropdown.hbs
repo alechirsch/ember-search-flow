@@ -2,11 +2,11 @@
 	class="search-flow_input"
 	value=value
 	placeholder=placeholder
-	focus-out="inputBlurred"
-	focus-in="inputFocused"
-	key-down="inputKeyDown"
-	key-up="inputKeyUp"
-	enter="inputEntered"
+	focus-out=(action "inputBlurred")
+	focus-in=(action "inputFocused")
+	key-down=(action "inputKeyDown")
+	key-up=(action "inputKeyUp")
+	enter=(action "inputEntered")
 }}
 {{#if filter.isFocused}}
 	{{search-flow/dropdown
