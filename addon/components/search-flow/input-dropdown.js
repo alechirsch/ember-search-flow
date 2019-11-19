@@ -42,7 +42,7 @@ export default Component.extend({
   setInputWidth() {
     this.element.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(this.get('value') || this.get('placeholder'), '</div>'));
     let tempDiv = this.element.querySelector('.search-flow_temp-div');
-    this.element.querySelector('.search-flow_input').style.width = tempDiv.offsetWidth + 3;
+    this.element.querySelector('.search-flow_input').style.width = `${tempDiv.offsetWidth + 3}px`;
     tempDiv.remove();
   },
   availableOptions: computed('options.[]', 'value', function () {
