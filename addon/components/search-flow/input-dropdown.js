@@ -1,4 +1,4 @@
-import Component from '@ember/compnent';
+import Component from '@ember/component';
 import { schedule } from '@ember/runloop';
 import EmberObject, { observer, computed, set } from '@ember/object';
 import  { A } from '@ember/array';
