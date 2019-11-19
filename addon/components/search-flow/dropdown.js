@@ -1,6 +1,5 @@
 import Component from '@ember/component';
-import { computed } from '@ember/computed';
-import { set } from '@ember/object';
+import { set, computed } from '@ember/object';
 import layout from '../../templates/components/search-flow/dropdown';
 
 export default Component.extend({
