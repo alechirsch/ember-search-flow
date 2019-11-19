@@ -1,10 +1,12 @@
-import Ember from 'ember';
+import Component from '@ember/compnent';
+import { schedule } from '@ember/runloop';
+import EmberObject, { observer, computed, set } from '@ember/object';
+import  { A } from '@ember/array';
 import layout from '../../templates/components/search-flow/input-dropdown';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   classNames: ['search-flow_input-dropdown'],
-  router: Ember.inject.service('-routing'),
   init() {
     this._super(...arguments);
     if (this.get('filter.value')) {
@@ -13,10 +15,10 @@ export default Ember.Component.extend({
     else {
       this.set('value', '');
     }
-    Ember.run.schedule('afterRender', this, function () {
+    schedule('afterRender', this, function () {
       if (!this.get('value')) {
         if (!this.get('filter')) {
-          this.set('filter', Ember.Object.create({}));
+          this.set('filter', EmberObject.create({}));
         }
         this.set('filter.isFocused', true);
         this.focusInput();
@@ -26,38 +28,36 @@ export default Ember.Component.extend({
   didInsertElement() {
     this.setInputWidth();
   },
-  getCurrentRoute() {
-    return Ember.getOwner(this).lookup(`route:${this.get('router.currentRouteName')}`);
-  },
   fetchOptions() {
     if (this.get('remoteFiltering')) {
       this.get('onValueUpdated')(this.get('value'), this.get('filter.parameter'));
     }
   },
-  valueObserver: Ember.observer('value', function () {
+  valueObserver: observer('value', function () {
     if (this.get('filter.isFocused')) {
       this.fetchOptions();
     }
     this.setInputWidth();
   }),
   setInputWidth() {
-    let tempDiv = Ember.$(`<div class="search-flow search-flow_option search-flow_temp-div" style="display:none">${this.get('value') || this.get('placeholder')}</div>`).appendTo('body');
-    this.$('.search-flow_input').css('width', tempDiv.width() + 3);
+    this.element.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(this.get('value') || this.get('placeholder'), '</div>'));
+    let tempDiv = this.element.querySelector('.search-flow_temp-div');
+    this.element.querySelector('.search-flow_input').style.width = tempDiv.offsetWidth + 3;
     tempDiv.remove();
   },
-  availableOptions: Ember.computed('options.[]', 'value', function () {
+  availableOptions: computed('options.[]', 'value', function () {
     let options = this.get('options');
     if (!options || !this.get('filter.isFocused')) {
-      return Ember.A([]);
+      return A([]);
     }
 
     // Convert options to array of objects if it is an array of strings
     options = options.map(option => {
       if (this.get('isParameterSelection')) {
-        option = Ember.Object.create({ title: option.title, value: option });
+        option = EmberObject.create({ title: option.title, value: option });
       }
       else {
-        option = Ember.Object.create({ title: option, value: option });
+        option = EmberObject.create({ title: option, value: option });
       }
       return option;
     });
@@ -75,7 +75,7 @@ export default Ember.Component.extend({
 
     // Insert contains option into list
     if (this.get('filter.parameter.contains') && this.get('value') && options.length) {
-      options.unshift(Ember.Object.create({ title: `Contains: ${this.get('value')}`, value: this.get('value'), isContains: true }));
+      options.unshift(EmberObject.create({ title: `Contains: ${this.get('value')}`, value: this.get('value'), isContains: true }));
     }
 
     // Set the index on each item for easy access later on
@@ -91,18 +91,20 @@ export default Ember.Component.extend({
 
     return options;
   }),
-  activeOption: Ember.computed('availableOptions.@each.isActive', function () {
+  activeOption: computed('availableOptions.@each.isActive', function () {
     return this.get('availableOptions').findBy('isActive');
   }),
   blurInput() {
-    let input = this.$('.search-flow_input');
-    if (input.is(':focus')) {
+    let input = this.element.querySelector('.search-flow_input');
+    let isInFocus = this.element.querySelector('.search-flow_input') === document.activeElement;
+    if (isInFocus) {
       input.blur();
     }
   },
   focusInput() {
-    let input = this.$('.search-flow_input');
-    if (!input.is(':focus')) {
+    let input = this.element.querySelector('.search-flow_input');
+    let isInFocus = this.element.querySelector('.search-flow_input') === document.activeElement;
+    if (!isInFocus) {
       input.focus();
     }
   },
@@ -141,7 +143,7 @@ export default Ember.Component.extend({
         let previousItem = this.get(`availableOptions.${this.get('activeOption.index') - 1}`);
         if (previousItem) {
           this.set('activeOption.isActive', false);
-          Ember.set(previousItem, 'isActive', true);
+          set(previousItem, 'isActive', true);
         }
       }
       else if (event.which === 40) { // Down
@@ -149,7 +151,7 @@ export default Ember.Component.extend({
         let nextItem = this.get(`availableOptions.${this.get('activeOption.index') + 1}`);
         if (nextItem) {
           this.set('activeOption.isActive', false);
-          Ember.set(nextItem, 'isActive', true);
+          set(nextItem, 'isActive', true);
         }
       }
       else if (event.which === 8 && !this.get('value')) { // Backspace
@@ -177,7 +179,7 @@ export default Ember.Component.extend({
     },
     inputBlurred() {
       // Ensure the filter is not removed with clicking on an option
-      if ((this.$('.search-flow_dropdown-option:hover').length || this.get('didHitEnter')) && !this.get('shouldRemoveFilter')) {
+      if ((this.element.querySelector('.search-flow_dropdown-option:hover') || this.get('didHitEnter')) && !this.get('shouldRemoveFilter')) {
         return;
       }
 

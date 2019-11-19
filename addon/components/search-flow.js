@@ -1,7 +1,10 @@
-import Ember from 'ember';
+import Component from '@ember/component';
 import layout from '../templates/components/search-flow';
+import { A, isArray } from '@ember/array';
+import { assign } from '@ember/polyfills';
+import EmberObject, { observer, computed } from '@ember/object';
 
-export default Ember.Component.extend({
+export default Component.extend({
   layout,
   classNames: ['search-flow'],
   searchLabel: 'Add Filter',
@@ -24,12 +27,12 @@ export default Ember.Component.extend({
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
   },
-  processQueries: Ember.observer('query', 'parameters', function () {
+  processQueries: observer('query', 'parameters', function () {
     if (this.get('queryGeneratedByComponent')) {
       this.set('queryGeneratedByComponent', false);
       return;
     }
-    let filters = this.set('filters', Ember.A([]));
+    let filters = this.set('filters', A([]));
     Object.keys(this.get('query')).forEach(key => {
       let keys = [key];
       let isContains = false;
@@ -44,37 +47,37 @@ export default Ember.Component.extend({
           values = values['contains'];
         }
         values = values[key];
-        if (!Ember.isArray(values)) {
+        if (!isArray(values)) {
           values = [values];
         }
         values.forEach(value => {
           let parameter = this.getParameter(key);
           if (parameter && (!isContains || (isContains && parameter.contains))) {
-            let filter = Ember.Object.create({
-              parameter: Ember.Object.create(parameter),
+            let filter = EmberObject.create({
+              parameter: EmberObject.create(parameter),
               value
             });
             if (isContains){
               filter.set('isContains', true);
             }
-            filter.parameters = Ember.assign({}, this.get('defaultParameterValues'), filter.parameters);
+            filter.parameters = assign({}, this.get('defaultParameterValues'), filter.parameters);
             filters.pushObject(filter);
           }
         });
       });
     });
   }),
-  availableParameters: Ember.computed('parameters', 'filters.[]', 'filters.@each.parameter', 'parameters.@each.suggested', function () {
+  availableParameters: computed('parameters', 'filters.[]', 'filters.@each.parameter', 'parameters.@each.suggested', function () {
     return this.get('parameters').reject(parameter => {
       return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
         return filter.get('parameter.name') === parameter.name;
       }));
     });
   }),
-  suggestedParameters: Ember.computed('availableParameters', function(){
+  suggestedParameters: computed('availableParameters', function(){
     return this.get('availableParameters').filterBy('suggested');
   }),
-  canClearAll: Ember.computed('filters.[]', function (){
+  canClearAll: computed('filters.[]', function (){
     return this.get('filters.length') > 1;
   }),
   isParameterAvailable(parameter) {
@@ -106,7 +109,7 @@ export default Ember.Component.extend({
       }
       let queryItem = this.getOnQuery(filter.get('isContains'), query, queryPath);
       if (queryItem) {
-        if (!Ember.isArray(queryItem)) {
+        if (!isArray(queryItem)) {
           if (queryItem === filter.value) {
             return;
           }
@@ -129,7 +132,7 @@ export default Ember.Component.extend({
       this.get('onQueryUpdated')(query);
     }
   },
-  canAddNewFilter: Ember.computed('isSelectingParameter', 'filters.[]', 'filters.@each.isFocused', 'maxFilters', function () {
+  canAddNewFilter: computed('isSelectingParameter', 'filters.[]', 'filters.@each.isFocused', 'maxFilters', function () {
     if (this.get('isSelectingParameter')) {
       return false;
     }
@@ -150,19 +153,19 @@ export default Ember.Component.extend({
       if (!this.isParameterAvailable(parameter)) {
         return;
       }
-      let filter = Ember.Object.create({
-        parameter: Ember.Object.create(parameter),
+      let filter = EmberObject.create({
+        parameter: EmberObject.create(parameter),
         value: '',
       });
-      filter.parameter = Ember.assign({}, this.get('defaultParameterValues'), filter.parameter);
+      filter.parameter = assign({}, this.get('defaultParameterValues'), filter.parameter);
       this.get('filters').pushObject(filter);
       this.set('isSelectingParameter', false);
     },
     setParameterToFilter(parameter, filter) {
-      filter.set('parameter', Ember.Object.create(parameter));
+      filter.set('parameter', EmberObject.create(parameter));
     },
     clearFilters(){
-      this.set('filters', Ember.A([]));
+      this.set('filters', A([]));
       this.generateQuery();
     },
     removeFilter(query) {
