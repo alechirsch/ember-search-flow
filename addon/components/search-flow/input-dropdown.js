@@ -3,6 +3,9 @@ import { schedule } from '@ember/runloop';
 import EmberObject, { observer, computed, set } from '@ember/object';
 import  { A } from '@ember/array';
 import layout from '../../templates/components/search-flow/input-dropdown';
+import { later, cancel } from '@ember/runloop';
+import config from 'ember-get-config';
+const seachflowConfig = config['ember-search-flow'];
 
 export default Component.extend({
   layout,
@@ -28,11 +31,32 @@ export default Component.extend({
   didInsertElement() {
     this.setInputWidth();
   },
-  fetchOptions() {
-    if (this.get('remoteFiltering')) {
-      this.get('onValueUpdated')(this.get('value'), this.get('filter.parameter'));
+  async requestWithTimeout(value, parameter, requestUid) {
+    let options = await this.get('onValueUpdated')(value, parameter);
+    if(this.get('currentRequestUid') === requestUid) {
+      this.set('filter.parameter.options', options);
+      this.set('isLoading', false);
     }
   },
+  fetchOptions() {
+    if (this.get('remoteFiltering')) {
+      if(seachflowConfig && seachflowConfig.optionsTimeout) {
+        let queryTimeout = seachflowConfig.optionsTimeout;
+        let requestUid = Math.random();
+        this.set('currentRequestUid', requestUid);
+        this.set('isLoading', true);
+
+        if (this.get('queryTimeout')) {
+          cancel(this.get('queryTimeout'));
+        }
+        this.set('queryTimeout', later(this, this.requestWithTimeout, this.get('value'), this.get('filter.parameter'), requestUid, queryTimeout));
+      }
+      else{
+        this.get('onValueUpdated')(this.get('value'), this.get('filter.parameter'));
+      }
+    }
+  },
+
   valueObserver: observer('value', function () {
     if (this.get('filter.isFocused')) {
       this.fetchOptions();
