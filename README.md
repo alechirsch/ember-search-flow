@@ -93,7 +93,7 @@ onValueUpdated(value, parameter){
 	Ember.set(parameter, 'options', options);
 }
 ```
-You can configure your Ember application to have Search Flow set a timeout prior to querying your resource for options to show.
+Optionally, you can configure your Ember application to have Search Flow set a timeout prior to querying your resource for options to show.
 In your Ember environment file, export a Search Flow configuration like the following:
 ```
 'ember-search-flow': {
@@ -101,7 +101,7 @@ In your Ember environment file, export a Search Flow configuration like the foll
 }
 ```
 This will make Search Flow wait one second after the user finishes typing before sending out requests for options to show.
-* If you choose to use this timeout configuration you must change the return value of your onValueUpdated function to be a Promise of the array of options.
+If you choose to use this timeout configuration you must change the return value of your onValueUpdated function to be a Promise of the array of options.
 
 
 ### onQueryUpdated
