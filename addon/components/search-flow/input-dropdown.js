@@ -33,7 +33,7 @@ export default Component.extend({
   },
   async requestWithTimeout(value, parameter, requestUid) {
     let options = await this.get('onValueUpdated')(value, parameter);
-    if(this.get('currentRequestUid') === requestUid) {
+    if (!this.get('isDestroyed') && this.get('currentRequestUid') === requestUid) {
       this.set('filter.parameter.options', options);
       this.set('isLoading', false);
     }
