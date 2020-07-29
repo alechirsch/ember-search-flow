@@ -11,7 +11,7 @@
 		<div 
 			class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
 			{{action 'optionClicked'}}
-			{{action 'optionHovered' option on="mouseEnter"}}
+			{{on 'mouseenter' (action 'optionHovered' option)}}
 		>
 			{{option.title}}
 		</div>
