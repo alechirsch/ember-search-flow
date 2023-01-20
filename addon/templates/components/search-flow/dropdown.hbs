@@ -1,13 +1,13 @@
 <div class="search-flow_dropdown__arrow"></div>
 <div class="search-flow_dropdown">
-{{#if hasNoOption}}
-	{{#unless isLoading}}
+{{#if this.hasNoOption}}
+	{{#unless this.isLoading}}
 		<div class="search-flow_dropdown-no-results">
 			No Results...
 		</div>
 	{{/unless}}
 {{else}}
-	{{#each options as |option|}}
+	{{#each this.options as |option|}}
 		<div 
 			class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
 			{{action 'optionClicked'}}
@@ -18,7 +18,7 @@
 	{{/each}}
 {{/if}}
 </div>
-{{#if isLoading}}
+{{#if this.isLoading}}
 	<div class="search-flow_dropdown-option search-flow_dropdown-option-loading">
 		Loading...
 	</div>

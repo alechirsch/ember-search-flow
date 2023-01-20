@@ -1,19 +1,19 @@
-{{input
-	class="search-flow_input"
-	value=value
-	placeholder=placeholder
-	focus-out=(action "inputBlurred")
-	focus-in=(action "inputFocused")
-	key-down=(action "inputKeyDown")
-	key-up=(action "inputKeyUp")
-	enter=(action "inputEntered")
-}}
-{{#if filter.isFocused}}
-	{{search-flow/dropdown
-		options=availableOptions
-		activeOption=activeOption
-		isContains=filter.isContains
-		isLoading=isLoading
-		selectOption=(action 'selectOption')
-	}}
+<Input
+	@class="search-flow_input"
+	@value={{this.value}}
+	@placeholder={{this.placeholder}}
+	@focusOut={{action 'inputBlurred'}}
+	@focusIn={{action 'inputFocused'}}
+	@keyDown={{action 'inputKeyDown'}}
+	@keyUp={{action 'inputKeyUp'}}
+	@enter={{action 'inputEntered'}}
+/>
+{{#if this.filter.isFocused}}
+	<SearchFlow::Dropdown
+		@options={{this.availableOptions}}
+		@activeOption={{this.activeOption}}
+		@isContains={{this.filter.isContains}}
+		@isLoading={{this.isLoading}}
+		@selectOption={{action 'selectOption'}}
+	/>
 {{/if}}
