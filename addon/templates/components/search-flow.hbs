@@ -11,7 +11,7 @@
 					@placeholder={{filter.parameter.placeholder}}
 					@filter={{filter}}
 					@onValueUpdated={{this.onValueUpdated}}
-					@inputBlurred=(action 'inputBlurred')
+					@inputBlurred={{action 'inputBlurred'}}
 				/>
 			</div>
 			<div class="search-flow__query-remove" {{action 'removeFilter' filter}}></div>
