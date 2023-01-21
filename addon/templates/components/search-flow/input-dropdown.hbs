@@ -1,12 +1,12 @@
 <Input
-	@class="search-flow_input"
+	class="search-flow_input"
 	@value={{this.value}}
-	@placeholder={{this.placeholder}}
-	@focusOut={{action 'inputBlurred'}}
-	@focusIn={{action 'inputFocused'}}
-	@keyDown={{action 'inputKeyDown'}}
-	@keyUp={{action 'inputKeyUp'}}
-	@enter={{action 'inputEntered'}}
+	placeholder={{this.placeholder}}
+	{{on 'focus-out' (action 'inputBlurred')}}
+	{{on 'focus-in' (action 'inputFocused')}}
+	{{on 'key-down' (action 'inputKeyDown')}}
+	{{on 'key-up' (action 'inputKeyUp')}}
+	{{on 'enter' (action 'inputEntered')}}
 />
 {{#if this.filter.isFocused}}
 	<SearchFlow::Dropdown
