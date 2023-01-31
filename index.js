@@ -2,12 +2,7 @@
 'use strict';
 
 module.exports = {
-  options: {
-    autoprefixer: {
-      browsers: ['last 2 versions']
-    }
-  },
-  afterInstall: function() {
+  afterInstall() {
     return this.addAddonsToProject({
       packages: [
         {name: 'ember-cli-autoprefixer'}
