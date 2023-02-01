@@ -11,7 +11,7 @@
 					@placeholder={{filter.parameter.placeholder}}
 					@filter={{filter}}
 					@onValueUpdated={{this.onValueUpdated}}
-					@inputBlurred={{action 'inputBlurred'}}
+					@inputBlurredAction={{action 'inputBlurred'}}
 				/>
 			</div>
 			<div class="search-flow__query-remove" {{action 'removeFilter' filter}}></div>
@@ -24,7 +24,7 @@
 				@localFiltering={{true}}
 				@isParameterSelection={{true}}
 				@didHitEnter={{this.didHitEnter}}
-				@inputBlurred={{action 'inputBlurred'}}
+				@inputBlurredAction={{action 'inputBlurred'}}
 				@newFilter={{action 'newFilterWithParameter'}}
 			/>
 		</div>

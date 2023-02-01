@@ -10,8 +10,8 @@
 	{{#each this.options as |option|}}
 		<div 
 			class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
-			{{action 'optionClicked'}}
-			{{on 'mouseenter' (action 'optionHovered' option)}}
+			{{on 'click' this.optionClicked}}
+			{{on 'mouseenter' (fn this.optionHovered option)}}
 		>
 			{{option.title}}
 		</div>

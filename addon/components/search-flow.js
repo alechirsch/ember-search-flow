@@ -2,7 +2,7 @@ import Component from '@ember/component';
 import layout from '../templates/components/search-flow';
 import { A, isArray } from '@ember/array';
 import { assign } from '@ember/polyfills';
-import EmberObject, { observer, computed } from '@ember/object';
+import { observer, computed } from '@ember/object';
 
 export default Component.extend({
   layout,
@@ -53,12 +53,12 @@ export default Component.extend({
         values.forEach(value => {
           let parameter = this.getParameter(key);
           if (parameter && (!isContains || (isContains && parameter.contains))) {
-            let filter = EmberObject.create({
-              parameter: EmberObject.create(parameter),
+            let filter = {
+              parameter,
               value
-            });
+            };
             if (isContains){
-              filter.set('isContains', true);
+              filter.isContains = true;
             }
             filter.parameters = assign({}, this.get('defaultParameterValues'), filter.parameters);
             filters.pushObject(filter);
@@ -70,7 +70,7 @@ export default Component.extend({
   availableParameters: computed('parameters', 'filters.[]', 'filters.@each.parameter', 'parameters.@each.suggested', function () {
     return this.get('parameters').reject(parameter => {
       return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
-        return filter.get('parameter.name') === parameter.name;
+        return filter?.parameter?.name === parameter.name;
       }));
     });
   }),
@@ -104,10 +104,10 @@ export default Component.extend({
     let query = {};
     this.get('filters').forEach(filter => {
       let queryPath = filter.parameter.name;
-      if (filter.get('isContains') && !query.contains) {
+      if (filter.isContains && !query.contains) {
           query.contains = {};
       }
-      let queryItem = this.getOnQuery(filter.get('isContains'), query, queryPath);
+      let queryItem = this.getOnQuery(filter.isContains, query, queryPath);
       if (queryItem) {
         if (!isArray(queryItem)) {
           if (queryItem === filter.value) {
@@ -119,10 +119,10 @@ export default Component.extend({
           return;
         }
         queryItem.push(filter.value);
-        this.setOnQuery(filter.get('isContains'), query, queryPath, queryItem);
+        this.setOnQuery(filter.isContains, query, queryPath, queryItem);
       }
       else {
-        this.setOnQuery(filter.get('isContains'), query, queryPath, filter.value);
+        this.setOnQuery(filter.isContains, query, queryPath, filter.value);
       }
     });
 
@@ -153,16 +153,16 @@ export default Component.extend({
       if (!this.isParameterAvailable(parameter)) {
         return;
       }
-      let filter = EmberObject.create({
-        parameter: EmberObject.create(parameter),
+      let filter = {
+        parameter,
         value: '',
-      });
+      };
       filter.parameter = assign({}, this.get('defaultParameterValues'), filter.parameter);
       this.get('filters').pushObject(filter);
       this.set('isSelectingParameter', false);
     },
     setParameterToFilter(parameter, filter) {
-      filter.set('parameter', EmberObject.create(parameter));
+      filter.parameter = parameter;
     },
     clearFilters(){
       this.set('filters', A([]));
