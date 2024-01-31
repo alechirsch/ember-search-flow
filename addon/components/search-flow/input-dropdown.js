@@ -7,6 +7,7 @@ import { later, cancel } from '@ember/runloop';
 import { classNames, layout as templateLayout } from '@ember-decorators/component';
 import { observes } from '@ember-decorators/object';
 import config from 'ember-get-config';
+import { escape } from '../../utils/escape-expression';
 const seachflowConfig = config['ember-search-flow'];
 
 @templateLayout(layout)
@@ -71,7 +72,8 @@ export default class InputDropdown extends Component {
   }
 
   setInputWidth() {
-    this.element.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(this.get('value') || this.get('placeholder'), '</div>'));
+    let sanitizedTempValue = escape(this.get('value') || this.get('placeholder'));
+    this.element.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(sanitizedTempValue, '</div>'));
     let tempDiv = this.element.querySelector('.search-flow_temp-div');
     this.element.querySelector('.search-flow_input').style.width = `${tempDiv.offsetWidth + 3}px`;
     tempDiv.remove();
