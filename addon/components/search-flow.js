@@ -1,7 +1,6 @@
 import Component from '@ember/component';
 import layout from '../templates/components/search-flow';
 import { A, isArray } from '@ember/array';
-import { assign } from '@ember/polyfills';
 import { observer, computed } from '@ember/object';
 
 export default Component.extend({
@@ -60,7 +59,10 @@ export default Component.extend({
             if (isContains){
               filter.isContains = true;
             }
-            filter.parameters = assign({}, this.get('defaultParameterValues'), filter.parameters);
+            filter.parameters = {
+					...this.get('defaultParameterValues'),
+					...filter.parameters
+				};
             filters.pushObject(filter);
           }
         });
