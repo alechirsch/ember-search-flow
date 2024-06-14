@@ -159,7 +159,10 @@ export default Component.extend({
         parameter,
         value: '',
       };
-      filter.parameter = assign({}, this.get('defaultParameterValues'), filter.parameter);
+      filter.parameter = {
+			...this.get('defaultParameterValues'),
+			...filter.parameter
+		};
       this.get('filters').pushObject(filter);
       this.set('isSelectingParameter', false);
     },
