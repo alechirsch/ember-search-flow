@@ -1,47 +1,71 @@
-import Component from '@ember/component';
-import layout from '../templates/components/search-flow';
+import Component from '@glimmer/component';
+import { tracked } from '@glimmer/tracking';
+import { cached } from '@glimmer/tracking';
 import { A, isArray } from '@ember/array';
-import { observer, computed } from '@ember/object';
+import { action } from '@ember/object';
 
-export default Component.extend({
-  layout,
-  classNames: ['search-flow'],
-  searchLabel: 'Add Filter',
-  clearLabel: 'Clear Filters',
-  maxFilters: null,
-  defaultParameterValues: {
-    allowMultiple: true,
-    remoteOptions: false,
-    contains: false,
-    sort: true,
-    suggested: false
-  },
-  init() {
-    this._super(...arguments);
-    this.processQueries();
-    this.set('isSelectingParameter', false);
-  },
+export default class SearchFlowComponent extends Component {
+  @tracked isSelectingParameter = false;
+  @tracked queryGeneratedByComponent = false;
+  @tracked didHitEnter = false;
+  @tracked _manualFilters = null;
+
+  get searchLabel() {
+    return this.args.searchLabel || 'Add Filter';
+  }
+
+  get clearLabel() {
+    return this.args.clearLabel || 'Clear Filters';
+  }
+
+  get maxFilters() {
+    return this.args.maxFilters || null;
+  }
+
+  get defaultParameterValues() {
+    return {
+      allowMultiple: true,
+      remoteOptions: false,
+      contains: false,
+      sort: true,
+      suggested: false
+    };
+  }
+
   getParameter(parameter) {
-    return this.get('parameters').find(param => {
+    return this.args.parameters?.find(param => {
       return parameter.toLowerCase() === param.name.toLowerCase();
     });
-  },
-  processQueries: observer('query', 'parameters', function () {
-    if (this.get('queryGeneratedByComponent')) {
-      this.set('queryGeneratedByComponent', false);
-      return;
+  }
+
+  // Reactively compute filters from the query
+  @cached
+  get filters() {
+    // If manually set filters exist, use those
+    if (this._manualFilters) {
+      return this._manualFilters;
     }
-    let filters = this.set('filters', A([]));
-    Object.keys(this.get('query')).forEach(key => {
+
+    // Otherwise, compute from query
+    if (this.queryGeneratedByComponent) {
+      return this._manualFilters || A([]);
+    }
+    
+    if (!this.args.query || !this.args.parameters) {
+      return A([]);
+    }
+
+    let filters = A([]);
+    Object.keys(this.args.query).forEach(key => {
       let keys = [key];
       let isContains = false;
       if (key === 'contains') {
-        keys = Object.keys(this.get('query.contains'));
+        keys = Object.keys(this.args.query.contains);
         isContains = true;
       }
 
       keys.forEach(key => {
-        let values = this.get('query');
+        let values = this.args.query;
         if (isContains){
           values = values['contains'];
         }
@@ -59,35 +83,46 @@ export default Component.extend({
             if (isContains){
               filter.isContains = true;
             }
-            filter.parameters = {
-					...this.get('defaultParameterValues'),
-					...filter.parameters
-				};
+            filter.parameter = {
+              ...this.defaultParameterValues,
+              ...filter.parameter
+            };
             filters.pushObject(filter);
           }
         });
       });
     });
-  }),
-  availableParameters: computed('parameters', 'filters.[]', 'filters.@each.parameter', 'parameters.@each.suggested', function () {
-    return this.get('parameters').reject(parameter => {
-      return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.get('filters').find(filter => {
+    
+    return filters;
+  }
+
+  set filters(value) {
+    this._manualFilters = value;
+  }
+
+  get availableParameters() {
+    return this.args.parameters?.reject(parameter => {
+      return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.filters.find(filter => {
         return filter?.parameter?.name === parameter.name;
       }));
-    });
-  }),
-  suggestedParameters: computed('availableParameters', function(){
-    return this.get('availableParameters').filterBy('suggested');
-  }),
-  canClearAll: computed('filters.[]', function (){
-    return this.get('filters.length') > 1;
-  }),
+    }) || A([]);
+  }
+
+  get suggestedParameters() {
+    return this.availableParameters.filterBy('suggested');
+  }
+
+  get canClearAll() {
+    return this.filters.length > 1;
+  }
+
   isParameterAvailable(parameter) {
     if (!parameter) {
       return true;
     }
-    return this.get('availableParameters').findBy('name', parameter.name);
-  },
+    return this.availableParameters.findBy('name', parameter.name);
+  }
+
   setOnQuery(isContains, query, path, value){
     if (isContains){
       query.contains[path] = value;
@@ -95,16 +130,18 @@ export default Component.extend({
     else {
       query[path] = value;
     }
-  },
+  }
+
   getOnQuery(isContains, query, path){
     if (isContains){
       return query.contains[path];
     }
     return query[path];
-  },
+  }
+
   generateQuery() {
     let query = {};
-    this.get('filters').forEach(filter => {
+    this.filters.forEach(filter => {
       let queryPath = filter.parameter.name;
       if (filter.isContains && !query.contains) {
           query.contains = {};
@@ -128,66 +165,78 @@ export default Component.extend({
       }
     });
 
-    this.set('queryGeneratedByComponent', true);
-    this.set('query', query);
-    if (this.get('onQueryUpdated')) {
-      this.get('onQueryUpdated')(query);
+    this.queryGeneratedByComponent = true;
+    if (this.args.onQueryUpdated) {
+      this.args.onQueryUpdated(query);
     }
-  },
-  canAddNewFilter: computed('isSelectingParameter', 'filters.[]', 'filters.@each.isFocused', 'maxFilters', function () {
-    if (this.get('isSelectingParameter')) {
-      return false;
-    }
-    if (typeof this.get('maxFilters') === 'number' && this.get('maxFilters') <= this.get('filters.length')){
-      return false;
-    }
-    return !this.get('filters').isAny('isFocused');
-  }),
-  actions: {
-    newFilter(event) {
-      if (event.which === 13) { // Enter key
-        // Must prevent the filter from auto selecting an option
-        this.set('didHitEnter', true);
-      }
-      this.set('isSelectingParameter', true);
-    },
-    newFilterWithParameter(parameter) {
-      if (!this.isParameterAvailable(parameter)) {
-        return;
-      }
-      let filter = {
-        parameter,
-        value: '',
-      };
-      filter.parameter = {
-			...this.get('defaultParameterValues'),
-			...filter.parameter
-		};
-      this.get('filters').pushObject(filter);
-      this.set('isSelectingParameter', false);
-    },
-    setParameterToFilter(parameter, filter) {
-      filter.parameter = parameter;
-    },
-    clearFilters(){
-      this.set('filters', A([]));
-      this.generateQuery();
-    },
-    removeFilter(query) {
-      this.get('filters').removeObject(query);
-      this.generateQuery();
-    },
-    inputBlurred(isNewParameter, filter, shouldRemoveFilter) {
-      if (isNewParameter) {
-        this.set('isSelectingParameter', false);
-        return;
-      }
-
-      if (!filter.value || shouldRemoveFilter) {
-        this.get('filters').removeObject(filter);
-      }
-      this.set('addingNewfilter', false);
-      this.generateQuery();
-    },
   }
-});
+
+  get canAddNewFilter() {
+    if (this.isSelectingParameter) {
+      return false;
+    }
+    if (typeof this.maxFilters === 'number' && this.maxFilters <= this.filters.length){
+      return false;
+    }
+    return !this.filters.isAny('isFocused');
+  }
+
+  @action
+  newFilter(event) {
+    if (event.which === 13) { // Enter key
+      // Must prevent the filter from auto selecting an option
+      this.didHitEnter = true;
+    }
+    this.isSelectingParameter = true;
+  }
+
+  @action
+  newFilterWithParameter(parameter) {
+    if (!this.isParameterAvailable(parameter)) {
+      return;
+    }
+    let filter = {
+      parameter: {
+        ...this.defaultParameterValues,
+        ...parameter
+      },
+      value: '',
+    };
+    // Create a new array with the additional filter
+    let currentFilters = this.filters;
+    this.filters = A([...currentFilters, filter]);
+    this.isSelectingParameter = false;
+  }
+
+  @action
+  setParameterToFilter(parameter, filter) {
+    filter.parameter = parameter;
+  }
+
+  @action
+  clearFilters(){
+    this.filters = A([]);
+    this.generateQuery();
+  }
+
+  @action
+  removeFilter(filterToRemove) {
+    // Create a new array without the removed filter
+    this.filters = A(this.filters.filter(f => f !== filterToRemove));
+    this.generateQuery();
+  }
+
+  @action
+  inputBlurred(isNewParameter, filter, shouldRemoveFilter) {
+    if (isNewParameter) {
+      this.isSelectingParameter = false;
+      return;
+    }
+
+    if (!filter.value || shouldRemoveFilter) {
+      // Create a new array without the removed filter
+      this.filters = A(this.filters.filter(f => f !== filter));
+    }
+    this.generateQuery();
+  }
+}

@@ -1,60 +1,62 @@
-/*jshint node:true*/
-module.exports = {
-  scenarios: [
-    {
-      name: 'ember-1.13',
-      bower: {
-        dependencies: {
-          'ember': '~1.13.0'
+'use strict';
+
+const getChannelURL = require('ember-source-channel-url');
+const { embroiderSafe, embroiderOptimized } = require('@embroider/test-setup');
+
+module.exports = async function () {
+  return {
+    usePnpm: true,
+    scenarios: [
+      {
+        name: 'ember-lts-4.12',
+        npm: {
+          devDependencies: {
+            'ember-source': '~4.12.0',
+          },
         },
-        resolutions: {
-          'ember': '~1.13.0'
-        }
-      }
-    },
-    {
-      name: 'ember-lts-2.4',
-      bower: {
-        dependencies: {
-          'ember': 'components/ember#lts-2-4'
+      },
+      {
+        name: 'ember-lts-5.4',
+        npm: {
+          devDependencies: {
+            'ember-source': '~5.4.0',
+          },
         },
-        resolutions: {
-          'ember': 'lts-2-4'
-        }
-      }
-    },
-    {
-      name: 'ember-release',
-      bower: {
-        dependencies: {
-          'ember': 'components/ember#release'
+      },
+      {
+        name: 'ember-6.4',
+        npm: {
+          devDependencies: {
+            'ember-source': '~6.4.0',
+          },
         },
-        resolutions: {
-          'ember': 'release'
-        }
-      }
-    },
-    {
-      name: 'ember-beta',
-      bower: {
-        dependencies: {
-          'ember': 'components/ember#beta'
+      },
+      {
+        name: 'ember-release',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('release'),
+          },
         },
-        resolutions: {
-          'ember': 'beta'
-        }
-      }
-    },
-    {
-      name: 'ember-canary',
-      bower: {
-        dependencies: {
-          'ember': 'components/ember#canary'
+      },
+      {
+        name: 'ember-beta',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('beta'),
+          },
         },
-        resolutions: {
-          'ember': 'canary'
-        }
-      }
-    }
-  ]
+      },
+      {
+        name: 'ember-canary',
+        npm: {
+          devDependencies: {
+            'ember-source': await getChannelURL('canary'),
+          },
+        },
+      },
+      embroiderSafe(),
+      embroiderOptimized(),
+    ],
+  };
 };

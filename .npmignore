@@ -1,0 +1,37 @@
+# compiled output
+/dist
+/tmp
+
+# dependencies
+/bower_components
+/node_modules
+
+# misc
+/.eslintcache
+/.eslintrc.js
+/.prettierrc.js
+/.template-lintrc.js
+/.editorconfig
+/.ember-cli
+/.env*
+/.git/
+/.gitignore
+/.travis.yml
+/.watchmanconfig
+/bower.json
+/config/ember-try.js
+/CONTRIBUTING.md
+/ember-cli-build.js
+/testem.js
+/tests/
+/yarn.lock
+/.nvmrc
+
+# ember-try
+/.node_modules.ember-try/
+/bower.json.ember-try
+/npm-shrinkwrap.json.ember-try
+/package.json.ember-try
+/package-lock.json.ember-try
+/yarn.lock.ember-try
+

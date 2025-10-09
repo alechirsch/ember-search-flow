@@ -1,10 +1,16 @@
-/*jshint node:true*/
-/* global require, module */
-var EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+'use strict';
 
-module.exports = function(defaults) {
-  var app = new EmberAddon(defaults, {
+const EmberAddon = require('ember-cli/lib/broccoli/ember-addon');
+
+module.exports = function (defaults) {
+  const app = new EmberAddon(defaults, {
     // Add options here
+    'ember-cli-babel': {
+      enableTypeScriptTransform: true,
+    },
+    sassOptions: {
+      extension: 'scss'
+    }
   });
 
   /*
@@ -14,5 +20,6 @@ module.exports = function(defaults) {
     behave. You most likely want to be modifying `./index.js` or app's build file
   */
 
-  return app.toTree();
+  const { maybeEmbroider } = require('@embroider/test-setup');
+  return maybeEmbroider(app);
 };
