@@ -16,9 +16,6 @@ export default class InputDropdownComponent extends Component {
   @tracked shouldRemoveFilter = false;
   @tracked _availableOptions = A([]);
 
-  inputElement = null;
-  wrapperElement = null;
-
   constructor() {
     super(...arguments);
     if (this.args.filter?.value) {
@@ -26,11 +23,8 @@ export default class InputDropdownComponent extends Component {
     }
     
     schedule('afterRender', this, () => {
-      if (!this.value) {
-        if (this.args.filter) {
-          this.args.filter.isFocused = true;
-        }
-        this.focusInput();
+      if (!this.value && this.args.filter) {
+        this.args.filter.isFocused = true;
       }
     });
   }
@@ -64,17 +58,11 @@ export default class InputDropdownComponent extends Component {
     }
   }
 
-  setInputWidth(element) {
-    if (!element) return;
-    
-    let sanitizedTempValue = escape(this.value || this.args.placeholder || '');
-    element.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(sanitizedTempValue, '</div>'));
-    let tempDiv = element.querySelector('.search-flow_temp-div');
-    let input = element.querySelector('.search-flow_input');
-    if (input && tempDiv) {
-      input.style.width = `${tempDiv.offsetWidth + 3}px`;
-      tempDiv.remove();
-    }
+  get inputSize() {
+    // Calculate the size attribute based on value or placeholder length
+    const text = this.value || this.args.placeholder || '';
+    // Add some padding to the size calculation
+    return Math.max(1, text.length + 1);
   }
 
   get availableOptions() {
@@ -127,37 +115,11 @@ export default class InputDropdownComponent extends Component {
     return this.availableOptions.findBy('isActive');
   }
 
-  blurInput() {
-    if (!this.inputElement) return;
-    let isInFocus = this.inputElement === document.activeElement;
-    if (isInFocus) {
-      this.inputElement.blur();
-    }
-  }
-
-  focusInput() {
-    if (!this.inputElement) return;
-    let isInFocus = this.inputElement === document.activeElement;
-    if (!isInFocus) {
-      this.inputElement.focus();
-    }
-  }
-
-  @action
-  setupInput(element) {
-    this.wrapperElement = element;
-    this.inputElement = element.querySelector('.search-flow_input');
-    this.setInputWidth(element);
-  }
-
   @action 
   updateValue(event) {
     this.value = event.target.value;
     if (this.args.filter?.isFocused) {
       this.fetchOptions();
-    }
-    if (this.wrapperElement) {
-      this.setInputWidth(this.wrapperElement);
     }
   }
 
@@ -184,7 +146,6 @@ export default class InputDropdownComponent extends Component {
         }
       }
     }
-    this.blurInput();
     this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter);
   }
 
@@ -240,21 +201,24 @@ export default class InputDropdownComponent extends Component {
   }
 
   @action 
-  inputBlurred() {
-    // Ensure the filter is not removed with clicking on an option
-    if (this.wrapperElement) {
-      if ((this.wrapperElement.querySelector('.search-flow_dropdown-option:hover') || this.args.didHitEnter) && !this.shouldRemoveFilter) {
+  inputBlurred(event) {
+    // Small delay to allow click events on dropdown options to fire first
+    setTimeout(() => {
+      if (this.isDestroying || this.isDestroyed) return;
+      
+      // Check if user clicked on a dropdown option
+      if (this.args.didHitEnter && !this.shouldRemoveFilter) {
         return;
       }
-    }
 
-    // Set the value to what the original filter value was
-    if (this.args.filter) {
-      this.args.filter.isFocused = false;
-      if (this.args.filter.isContains) {
-        this.value = `Contains: ${this.args.filter.value}`;
+      // Set the value to what the original filter value was
+      if (this.args.filter) {
+        this.args.filter.isFocused = false;
+        if (this.args.filter.isContains) {
+          this.value = `Contains: ${this.args.filter.value}`;
+        }
       }
-    }
-    this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter, this.shouldRemoveFilter);
+      this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter, this.shouldRemoveFilter);
+    }, 150);
   }
 }

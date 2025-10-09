@@ -1,7 +1,7 @@
 'use strict';
 
 module.exports = {
-  name: require('./package').name,
+  name: require('./package.json').name,
 
   options: {
     '@embroider/macros': {

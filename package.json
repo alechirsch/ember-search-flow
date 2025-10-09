@@ -71,12 +71,10 @@
   },
   "dependencies": {
     "@embroider/addon-shim": "^1.8.7",
-    "ember-auto-import": "^2.11.1",
     "ember-cli-autoprefixer": "^2.0.0",
     "ember-cli-htmlbars": "^6.3.0",
     "ember-cli-sass": "^11.0.1",
-    "ember-get-config": "^2.1.1",
-    "ember-modifier": "^4.1.0"
+    "ember-get-config": "^2.1.1"
   },
   "peerDependencies": {
     "ember-source": "^4.0.0 || ^5.0.0 || ^6.0.0"
