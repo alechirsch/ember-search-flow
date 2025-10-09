@@ -10,6 +10,10 @@ module.exports = function (defaults) {
     },
     sassOptions: {
       extension: 'scss'
+    },
+    autoprefixer: {
+      enabled: true,
+      browsers: ['last 2 versions']
     }
   });
 
