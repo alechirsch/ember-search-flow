@@ -39,7 +39,6 @@ export default class SearchFlowComponent extends Component {
   }
 
   // Reactively compute filters from the query
-  @cached
   get filters() {
     // If manually set filters exist, use those
     if (this._manualFilters) {
