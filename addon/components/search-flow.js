@@ -3,12 +3,16 @@ import { tracked } from '@glimmer/tracking';
 import { cached } from '@glimmer/tracking';
 import { A, isArray } from '@ember/array';
 import { action } from '@ember/object';
+import { setComponentTemplate } from '@ember/component';
+import { hbs } from 'ember-cli-htmlbars';
+import layout from '../templates/components/search-flow';
 
-export default class SearchFlowComponent extends Component {
+class SearchFlowComponent extends Component {
   @tracked isSelectingParameter = false;
   @tracked queryGeneratedByComponent = false;
   @tracked didHitEnter = false;
   @tracked _manualFilters = null;
+  @tracked _filterFocusTracker = 0; // Track filter focus changes
 
   get searchLabel() {
     return this.args.searchLabel || 'Add Filter';
@@ -100,15 +104,25 @@ export default class SearchFlowComponent extends Component {
   }
 
   get availableParameters() {
-    return this.args.parameters?.reject(parameter => {
-      return !parameter.name || !parameter.title || (parameter.allowMultiple === false && this.filters.find(filter => {
-        return filter?.parameter?.name === parameter.name;
-      }));
-    }) || A([]);
+    if (!this.args.parameters) {
+      return A([]);
+    }
+    
+    // Use native filter instead of Ember's reject to ensure compatibility
+    const filtered = this.args.parameters.filter(parameter => {
+      // Keep parameters that have both name and title, and handle allowMultiple
+      return parameter.name && parameter.title && 
+        !(parameter.allowMultiple === false && this.filters.find(filter => {
+          return filter?.parameter?.name === parameter.name;
+        }));
+    });
+    
+    return A(filtered);
   }
 
   get suggestedParameters() {
-    return this.availableParameters.filterBy('suggested');
+    // Use native filter instead of filterBy for compatibility
+    return this.availableParameters.filter(param => param.suggested);
   }
 
   get canClearAll() {
@@ -119,7 +133,8 @@ export default class SearchFlowComponent extends Component {
     if (!parameter) {
       return true;
     }
-    return this.availableParameters.findBy('name', parameter.name);
+    // Use native find instead of findBy for compatibility
+    return this.availableParameters.find(p => p.name === parameter.name);
   }
 
   setOnQuery(isContains, query, path, value){
@@ -171,13 +186,22 @@ export default class SearchFlowComponent extends Component {
   }
 
   get canAddNewFilter() {
+    // Access _filterFocusTracker to ensure this getter reruns when focus changes
+    this._filterFocusTracker;
+    
     if (this.isSelectingParameter) {
       return false;
     }
     if (typeof this.maxFilters === 'number' && this.maxFilters <= this.filters.length){
       return false;
     }
-    return !this.filters.isAny('isFocused');
+    // Check if any filter has isFocused using plain JS
+    return !this.filters.some(filter => filter.isFocused);
+  }
+  
+  // Method to be called when filter focus changes
+  notifyFilterFocusChange() {
+    this._filterFocusTracker++;
   }
 
   @action
@@ -239,3 +263,5 @@ export default class SearchFlowComponent extends Component {
     this.generateQuery();
   }
 }
+
+export default setComponentTemplate(layout, SearchFlowComponent);

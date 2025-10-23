@@ -1,7 +1,9 @@
 import Component from '@glimmer/component';
 import { action } from '@ember/object';
+import { setComponentTemplate } from '@ember/component';
+import layout from '../../templates/components/search-flow/dropdown';
 
-export default class DropdownComponent extends Component {
+class DropdownComponent extends Component {
   get hasNoOption() {
     return this.args.options?.length === 0;
   }
@@ -21,3 +23,5 @@ export default class DropdownComponent extends Component {
     }
   }
 }
+
+export default setComponentTemplate(layout, DropdownComponent);

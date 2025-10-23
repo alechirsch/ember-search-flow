@@ -12,6 +12,7 @@
 					@filter={{filter}}
 					@onValueUpdated={{@onValueUpdated}}
 					@inputBlurredAction={{this.inputBlurred}}
+					@onFocusChange={{this.notifyFilterFocusChange}}
 				/>
 			</div>
 			<div class="search-flow__query-remove" role="button" {{on "click" (fn this.removeFilter filter)}}></div>

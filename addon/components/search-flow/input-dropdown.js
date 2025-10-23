@@ -6,9 +6,11 @@ import { schedule } from '@ember/runloop';
 import { later, cancel } from '@ember/runloop';
 import config from 'ember-get-config';
 import { escape } from '../../utils/escape-expression';
+import { setComponentTemplate } from '@ember/component';
+import layout from '../../templates/components/search-flow/input-dropdown';
 const searchflowConfig = config['ember-search-flow'];
 
-export default class InputDropdownComponent extends Component {
+class InputDropdownComponent extends Component {
   @tracked value = '';
   @tracked isLoading = false;
   @tracked currentRequestUid = null;
@@ -25,6 +27,7 @@ export default class InputDropdownComponent extends Component {
     schedule('afterRender', this, () => {
       if (!this.value && this.args.filter) {
         this.args.filter.isFocused = true;
+        this.args.onFocusChange?.();
       }
     });
   }
@@ -89,7 +92,11 @@ export default class InputDropdownComponent extends Component {
 
     // Sort options in alphabetical order if the sort parameter is true
     if (this.args.filter?.parameter?.sort){
-      options = options.sortBy('title');
+      options = options.sort((a, b) => {
+        const titleA = a.title?.toLowerCase() || '';
+        const titleB = b.title?.toLowerCase() || '';
+        return titleA.localeCompare(titleB);
+      });
     }
 
     // Insert contains option into list
@@ -103,16 +110,16 @@ export default class InputDropdownComponent extends Component {
     });
 
     // Ensure first option is selected
-    options.setEach('isActive', false);
-    if (options.firstObject) {
-      options.firstObject.isActive = true;
+    options.forEach(opt => opt.isActive = false);
+    if (options[0]) {
+      options[0].isActive = true;
     }
 
     return options;
   }
 
   get activeOption() {
-    return this.availableOptions.findBy('isActive');
+    return this.availableOptions.find(opt => opt.isActive);
   }
 
   @action 
@@ -128,6 +135,7 @@ export default class InputDropdownComponent extends Component {
     let activeOption = this.activeOption;
     if (this.args.filter) {
       this.args.filter.isFocused = false;
+      this.args.onFocusChange?.();
     }
     
     if (this.args.isParameterSelection) {
@@ -194,6 +202,7 @@ export default class InputDropdownComponent extends Component {
     this.fetchOptions();
     if (this.args.filter) {
       this.args.filter.isFocused = true;
+      this.args.onFocusChange?.();
       if (this.args.filter.isContains) {
         this.value = this.args.filter.value;
       }
@@ -214,6 +223,7 @@ export default class InputDropdownComponent extends Component {
       // Set the value to what the original filter value was
       if (this.args.filter) {
         this.args.filter.isFocused = false;
+        this.args.onFocusChange?.();
         if (this.args.filter.isContains) {
           this.value = `Contains: ${this.args.filter.value}`;
         }
@@ -222,3 +232,5 @@ export default class InputDropdownComponent extends Component {
     }, 150);
   }
 }
+
+export default setComponentTemplate(layout, InputDropdownComponent);
