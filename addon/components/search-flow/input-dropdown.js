@@ -70,7 +70,7 @@ class InputDropdownComponent extends Component {
 
   get availableOptions() {
     let options = this.args.options;
-    if (!options || !this.args.filter?.isFocused) {
+    if (!options || (!this.args.filter?.isFocused && !this.args.isParameterSelection)) {
       return A([]);
     }
 
@@ -131,8 +131,9 @@ class InputDropdownComponent extends Component {
   }
 
   @action 
-  selectOption() {
-    let activeOption = this.activeOption;
+  selectOption(clickedOption) {
+    // Use the clicked option if provided, otherwise fall back to activeOption (for keyboard selection)
+    let activeOption = clickedOption || this.activeOption;
     if (this.args.filter) {
       this.args.filter.isFocused = false;
       this.args.onFocusChange?.();
@@ -217,6 +218,10 @@ class InputDropdownComponent extends Component {
       
       // Check if user clicked on a dropdown option
       if (this.args.didHitEnter && !this.shouldRemoveFilter) {
+        // Reset didHitEnter flag after handling
+        if (this.args.isParameterSelection) {
+          this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter, this.shouldRemoveFilter);
+        }
         return;
       }
 

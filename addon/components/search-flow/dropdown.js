@@ -17,9 +17,10 @@ class DropdownComponent extends Component {
   }
 
   @action 
-  optionClicked(){
+  optionClicked(option) {
     if (this.args.selectOption) {
-      this.args.selectOption();
+      // Pass the clicked option directly to selectOption
+      this.args.selectOption(option);
     }
   }
 }

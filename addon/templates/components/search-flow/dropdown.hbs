@@ -1,27 +1,29 @@
-<div class="search-flow_dropdown__arrow"></div>
-<div class="search-flow_dropdown">
-{{#if this.hasNoOption}}
-	{{#unless @isLoading}}
-		<div class="search-flow_dropdown-no-results">
-			No Results...
-		</div>
-	{{/unless}}
-{{else}}
-	{{#each @options as |option|}}
-		<div 
-			class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
-			role="button"
-			{{on "click" this.optionClicked}}
-			{{on "mouseenter" (fn this.optionHovered option)}}
-		>
-			{{option.title}}
-		</div>
-	{{/each}}
-{{/if}}
-</div>
-{{#if @isLoading}}
-	<div class="search-flow_dropdown-option search-flow_dropdown-option-loading">
-		Loading...
+<div class="search-flow_dropdown__bg">
+	<div class="search-flow_dropdown__arrow"></div>
+	<div class="search-flow_dropdown">
+	{{#if this.hasNoOption}}
+		{{#unless @isLoading}}
+			<div class="search-flow_dropdown-no-results">
+				No Results...
+			</div>
+		{{/unless}}
+	{{else}}
+		{{#each @options as |option|}}
+			<div 
+				class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
+				role="button"
+				{{on "click" (fn this.optionClicked option)}}
+				{{on "mouseenter" (fn this.optionHovered option)}}
+			>
+				{{option.title}}
+			</div>
+		{{/each}}
+	{{/if}}
 	</div>
-{{/if}}
+	{{#if @isLoading}}
+		<div class="search-flow_dropdown-option search-flow_dropdown-option-loading">
+			Loading...
+		</div>
+	{{/if}}
+</div>
 {{yield}}

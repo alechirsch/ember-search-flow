@@ -200,14 +200,14 @@ class SearchFlowComponent extends Component {
   }
   
   // Method to be called when filter focus changes
+  @action
   notifyFilterFocusChange() {
     this._filterFocusTracker++;
   }
 
   @action
   newFilter(event) {
-    if (event.which === 13) { // Enter key
-      // Must prevent the filter from auto selecting an option
+    if (event.which === 13) {
       this.didHitEnter = true;
     }
     this.isSelectingParameter = true;
@@ -229,6 +229,7 @@ class SearchFlowComponent extends Component {
     let currentFilters = this.filters;
     this.filters = A([...currentFilters, filter]);
     this.isSelectingParameter = false;
+    this.didHitEnter = false;
   }
 
   @action
