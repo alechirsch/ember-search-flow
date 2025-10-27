@@ -1,6 +1,6 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { action } from '@ember/object';
+import { action, set } from '@ember/object';
 import { A } from '@ember/array';
 import { schedule } from '@ember/runloop';
 import { later, cancel } from '@ember/runloop';
@@ -17,6 +17,8 @@ class InputDropdownComponent extends Component {
   @tracked queryTimeout = null;
   @tracked shouldRemoveFilter = false;
   @tracked _availableOptions = A([]);
+  @tracked isFocused = false; // Track focus state locally
+  inputElement = null;
 
   constructor() {
     super(...arguments);
@@ -29,6 +31,7 @@ class InputDropdownComponent extends Component {
         this.args.filter.isFocused = true;
         this.args.onFocusChange?.();
       }
+      this.setInputWidth();
     });
   }
 
@@ -61,16 +64,51 @@ class InputDropdownComponent extends Component {
     }
   }
 
-  get inputSize() {
-    // Calculate the size attribute based on value or placeholder length
-    const text = this.value || this.args.placeholder || '';
-    // Add some padding to the size calculation
-    return Math.max(1, text.length + 1);
+  setInputWidth() {
+    if (!this.inputElement) return;
+    
+    let parentElement = this.inputElement.parentElement?.parentElement;
+    if (!parentElement) return;
+    
+    let sanitizedTempValue = escape(this.value || this.args.placeholder || '');
+    parentElement.insertAdjacentHTML('beforeend', '<div class="search-flow search-flow_option search-flow_temp-div" style="position:fixed;left: -10000px;visibility:hidden">'.concat(sanitizedTempValue, '</div>'));
+    let tempDiv = parentElement.querySelector('.search-flow_temp-div');
+    if (tempDiv) {
+      this.inputElement.style.width = `${tempDiv.offsetWidth + 3}px`;
+      tempDiv.remove();
+    }
+  }
+
+  focusInput() {
+    if (this.inputElement && document.activeElement !== this.inputElement) {
+      this.inputElement.focus();
+    }
+  }
+
+  blurInput() {
+    if (this.inputElement && document.activeElement === this.inputElement) {
+      this.inputElement.blur();
+    }
+  }
+
+  @action
+  registerInput(element) {
+    this.inputElement = element;
+    schedule('afterRender', this, () => {
+      this.setInputWidth();
+    });
   }
 
   get availableOptions() {
+    // Check if filter is focused (use local tracked property) or if it's parameter selection
+    if (!this.isFocused && !this.args.isParameterSelection) {
+      return A([]);
+    }
+    
     let options = this.args.options;
-    if (!options || (!this.args.filter?.isFocused && !this.args.isParameterSelection)) {
+    
+    // For remote filtering, options might be undefined initially - that's okay, return empty array
+    if (!options) {
       return A([]);
     }
 
@@ -128,14 +166,19 @@ class InputDropdownComponent extends Component {
     if (this.args.filter?.isFocused) {
       this.fetchOptions();
     }
+    this.setInputWidth();
   }
 
   @action 
   selectOption(clickedOption) {
     // Use the clicked option if provided, otherwise fall back to activeOption (for keyboard selection)
     let activeOption = clickedOption || this.activeOption;
+    
+    // Set local tracked property
+    this.isFocused = false;
+    
     if (this.args.filter) {
-      this.args.filter.isFocused = false;
+      set(this.args.filter, 'isFocused', false); // Use set() for reactivity
       this.args.onFocusChange?.();
     }
     
@@ -144,17 +187,21 @@ class InputDropdownComponent extends Component {
     }
     else {
       if (this.args.filter) {
-        this.args.filter.value = activeOption.value;
+        set(this.args.filter, 'value', activeOption.value);
         if (activeOption.isContains) {
-          this.args.filter.isContains = true;
+          set(this.args.filter, 'isContains', true);
           this.value = `Contains: ${activeOption.value}`;
         }
         else {
-          this.args.filter.isContains = false;
+          set(this.args.filter, 'isContains', false);
           this.value = activeOption.value;
         }
+        schedule('afterRender', this, () => {
+          this.setInputWidth();
+        });
       }
     }
+    this.blurInput();
     this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter);
   }
 
@@ -201,11 +248,19 @@ class InputDropdownComponent extends Component {
   @action 
   inputFocused() {
     this.fetchOptions();
+    
+    // Set local tracked property for reactivity
+    this.isFocused = true;
+    
     if (this.args.filter) {
-      this.args.filter.isFocused = true;
+      set(this.args.filter, 'isFocused', true); // Use set() for reactivity
       this.args.onFocusChange?.();
+      
       if (this.args.filter.isContains) {
         this.value = this.args.filter.value;
+        schedule('afterRender', this, () => {
+          this.setInputWidth();
+        });
       }
     }
   }
@@ -226,11 +281,16 @@ class InputDropdownComponent extends Component {
       }
 
       // Set the value to what the original filter value was
+      this.isFocused = false; // Set local tracked property
+      
       if (this.args.filter) {
-        this.args.filter.isFocused = false;
+        set(this.args.filter, 'isFocused', false); // Use set() for reactivity
         this.args.onFocusChange?.();
         if (this.args.filter.isContains) {
           this.value = `Contains: ${this.args.filter.value}`;
+          schedule('afterRender', this, () => {
+            this.setInputWidth();
+          });
         }
       }
       this.args.inputBlurredAction?.(this.args.isParameterSelection, this.args.filter, this.shouldRemoveFilter);

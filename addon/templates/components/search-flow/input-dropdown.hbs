@@ -4,7 +4,7 @@
 			class="search-flow_input"
 			@value={{this.value}}
 			placeholder={{@placeholder}}
-			size={{this.inputSize}}
+			{{did-insert this.registerInput}}
 			{{on "input" this.updateValue}}
 			{{on "focusout" this.inputBlurred}}
 			{{on "focusin" this.inputFocused}}

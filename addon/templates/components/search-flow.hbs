@@ -1,62 +1,60 @@
-<div class="search-flow_queries">
-	{{#each this.filters as |filter|}}
+<div class="search-flow">
+	<div class="search-flow_queries">
+		{{#each this.filters as |filter|}}
 		<div class="search-flow__query">
 			<div class="search-flow__query-title">
 				{{filter.parameter.title}} :
 			</div>
 			<div class="search-flow__query-value">
-				<SearchFlow::InputDropdown
-					@remoteFiltering={{filter.parameter.remoteOptions}}
-					@options={{filter.parameter.options}}
-					@placeholder={{filter.parameter.placeholder}}
-					@filter={{filter}}
-					@onValueUpdated={{@onValueUpdated}}
-					@inputBlurredAction={{this.inputBlurred}}
-					@onFocusChange={{this.notifyFilterFocusChange}}
-				/>
+				<SearchFlow::InputDropdown @remoteFiltering={{filter.parameter.remoteOptions}}
+					@options={{filter.parameter.options}} @placeholder={{filter.parameter.placeholder}} @filter={{filter}}
+					@onValueUpdated={{@onValueUpdated}} @inputBlurredAction={{this.inputBlurred}}
+					@onFocusChange={{this.notifyFilterFocusChange}} />
 			</div>
 			<div class="search-flow__query-remove" role="button" {{on "click" (fn this.removeFilter filter)}}></div>
 		</div>
-	{{/each}}
-	{{#if this.isSelectingParameter}}
+		{{/each}}
+		{{#if this.isSelectingParameter}}
 		<div class="search-flow_parameter_input">
-			<SearchFlow::InputDropdown
-				@options={{this.availableParameters}}
-				@localFiltering={{true}}
-				@isParameterSelection={{true}}
-				@didHitEnter={{this.didHitEnter}}
-				@inputBlurredAction={{this.inputBlurred}}
-				@newFilter={{this.newFilterWithParameter}}
-			/>
+			<SearchFlow::InputDropdown @options={{this.availableParameters}} @localFiltering={{true}}
+				@isParameterSelection={{true}} @didHitEnter={{this.didHitEnter}} @inputBlurredAction={{this.inputBlurred}}
+				@newFilter={{this.newFilterWithParameter}} />
 		</div>
-	{{/if}}
-	{{#if this.availableParameters.length}}
-		<button class="search-flow_add{{unless this.canAddNewFilter ' search-flow_add-hidden'}}" type="button" {{on "click" this.newFilter}}>
-			<svg class="add-icon" width="18px" height="18px" viewBox="608 440 44 44" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+		{{/if}}
+		{{#if this.availableParameters.length}}
+		<button class="search-flow_add{{unless this.canAddNewFilter ' search-flow_add-hidden'}}" type="button" {{on "click"
+			this.newFilter}}>
+			<svg class="add-icon" width="18px" height="18px" viewBox="608 440 44 44" version="1.1"
+				xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
 				<defs></defs>
-				<path d="M627,476.001 C617.611,476.001 610,468.389 610,459 C610,449.611 617.611,442 627,442 C636.389,442 644,449.611 644,459 C644,468.389 636.389,476.001 627,476.001 Z M651.707,482.293 L641.108,471.694 C644.14,468.328 646,463.887 646,459 C646,448.507 637.494,440 627,440 C616.507,440 608,448.507 608,459 C608,469.494 616.507,478 627,478 C631.887,478 636.328,476.14 639.694,473.108 L650.293,483.707 C650.474,483.889 650.724,484 651,484 C651.553,484 652,483.553 652,483 C652,482.725 651.889,482.475 651.707,482.293 Z M636,458 L628,458 L628,450 C628,449.448 627.553,449 627,449 C626.447,449 626,449.448 626,450 L626,458 L618,458 C617.447,458 617,458.448 617,459 C617,459.553 617.447,460 618,460 L626,460 L626,468 C626,468.553 626.447,469 627,469 C627.553,469 628,468.553 628,468 L628,460 L636,460 C636.553,460 637,459.553 637,459 C637,458.448 636.553,458 636,458 L636,458 Z" id="add-search-icon" stroke="none" fill="#3B71AA" fill-rule="evenodd"></path>
+				<path
+					d="M627,476.001 C617.611,476.001 610,468.389 610,459 C610,449.611 617.611,442 627,442 C636.389,442 644,449.611 644,459 C644,468.389 636.389,476.001 627,476.001 Z M651.707,482.293 L641.108,471.694 C644.14,468.328 646,463.887 646,459 C646,448.507 637.494,440 627,440 C616.507,440 608,448.507 608,459 C608,469.494 616.507,478 627,478 C631.887,478 636.328,476.14 639.694,473.108 L650.293,483.707 C650.474,483.889 650.724,484 651,484 C651.553,484 652,483.553 652,483 C652,482.725 651.889,482.475 651.707,482.293 Z M636,458 L628,458 L628,450 C628,449.448 627.553,449 627,449 C626.447,449 626,449.448 626,450 L626,458 L618,458 C617.447,458 617,458.448 617,459 C617,459.553 617.447,460 618,460 L626,460 L626,468 C626,468.553 626.447,469 627,469 C627.553,469 628,468.553 628,468 L628,460 L636,460 C636.553,460 637,459.553 637,459 C637,458.448 636.553,458 636,458 L636,458 Z"
+					id="add-search-icon" stroke="none" fill="#3B71AA" fill-rule="evenodd"></path>
 			</svg>
 			{{this.searchLabel}}
 		</button>
-	{{/if}}
-	{{#if this.canClearAll}}
+		{{/if}}
+		{{#if this.canClearAll}}
 		<button class="search-flow_clear" type="button" {{on "click" this.clearFilters}}>
 			<svg class="clear-icon" width="18px" height="18px" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-				<path d="M0 0h24v24H0z" fill="none"/>
-				<path stroke="none" fill="#3B71AA" fill-rule="evenodd" d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z"/>
+				<path d="M0 0h24v24H0z" fill="none" />
+				<path stroke="none" fill="#3B71AA" fill-rule="evenodd"
+					d="M14.59 8L12 10.59 9.41 8 8 9.41 10.59 12 8 14.59 9.41 16 12 13.41 14.59 16 16 14.59 13.41 12 16 9.41 14.59 8zM12 2C6.47 2 2 6.47 2 12s4.47 10 10 10 10-4.47 10-10S17.53 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8z" />
 			</svg>
 			{{this.clearLabel}}
 		</button>
-	{{/if}}
-</div>
-<div class="search-flow_parameters">
-	{{#if this.suggestedParameters.length}}
+		{{/if}}
+	</div>
+	<div class="search-flow_parameters">
+		{{#if this.suggestedParameters.length}}
 		<label>Suggested Filters: </label>
 		{{#each this.suggestedParameters as |parameter|}}
-			<div class="search-flow_parameter" role="button" {{on "click" (fn this.newFilterWithParameter parameter)}}>
-				{{parameter.title}}
-			</div>
+		<div class="search-flow_parameter" role="button" {{on "click" (fn this.newFilterWithParameter parameter)}}>
+			{{parameter.title}}
+		</div>
 		{{/each}}
-	{{/if}}
+		{{/if}}
+	</div>
+	{{yield}}
 </div>
-{{yield}}
+
