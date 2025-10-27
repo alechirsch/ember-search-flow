@@ -12,7 +12,15 @@
 			{{on "keyup" this.inputKeyUp}}
 		/>
 	</span>
-	{{#if (or @isParameterSelection @filter.isFocused)}}
+	{{#if this.isFocused}}
+		<SearchFlow::Dropdown
+			@options={{this.availableOptions}}
+			@activeOption={{this.activeOption}}
+			@isContains={{@filter.isContains}}
+			@isLoading={{this.isLoading}}
+			@selectOption={{this.selectOption}}
+		/>
+	{{else if @isParameterSelection}}
 		<SearchFlow::Dropdown
 			@options={{this.availableOptions}}
 			@activeOption={{this.activeOption}}

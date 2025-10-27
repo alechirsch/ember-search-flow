@@ -17,7 +17,7 @@ class InputDropdownComponent extends Component {
   @tracked queryTimeout = null;
   @tracked shouldRemoveFilter = false;
   @tracked _availableOptions = A([]);
-  @tracked isFocused = false; // Track focus state locally
+  @tracked isFocused = false; // Track focus state locally for reactivity
   inputElement = null;
 
   constructor() {
@@ -100,14 +100,14 @@ class InputDropdownComponent extends Component {
   }
 
   get availableOptions() {
+    let options = this.args.options;
+    
     // Check if filter is focused (use local tracked property) or if it's parameter selection
     if (!this.isFocused && !this.args.isParameterSelection) {
       return A([]);
     }
     
-    let options = this.args.options;
-    
-    // For remote filtering, options might be undefined initially - that's okay, return empty array
+    // For remote filtering, options might be undefined initially - return empty array
     if (!options) {
       return A([]);
     }
@@ -255,7 +255,6 @@ class InputDropdownComponent extends Component {
     if (this.args.filter) {
       set(this.args.filter, 'isFocused', true); // Use set() for reactivity
       this.args.onFocusChange?.();
-      
       if (this.args.filter.isContains) {
         this.value = this.args.filter.value;
         schedule('afterRender', this, () => {
