@@ -39,7 +39,7 @@ class InputDropdownComponent extends Component {
     let options = await this.args.onValueUpdated(value, parameter);
     if (!this.isDestroying && !this.isDestroyed && this.currentRequestUid === requestUid) {
       if (this.args.filter?.parameter) {
-        this.args.filter.parameter.options = options;
+        set(this.args.filter.parameter, 'options', options);
       }
       this.isLoading = false;
     }
