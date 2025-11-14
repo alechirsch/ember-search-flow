@@ -195,8 +195,8 @@ class SearchFlowComponent extends Component {
     if (typeof this.maxFilters === 'number' && this.maxFilters <= this.filters.length){
       return false;
     }
-    // Check if any filter has isFocused using plain JS
-    return !this.filters.some(filter => filter.isFocused);
+    // Check if any filter has isFocused or lacks a value
+    return !this.filters.some(filter => filter.isFocused || !filter.value);
   }
   
   // Method to be called when filter focus changes
@@ -218,6 +218,13 @@ class SearchFlowComponent extends Component {
     if (!this.isParameterAvailable(parameter)) {
       return;
     }
+    
+    // Check if any existing filter is focused or lacks a value
+    const hasInvalidFilter = this.filters.some(filter => filter.isFocused || !filter.value);
+    if (hasInvalidFilter) {
+      return;
+    }
+    
     let filter = {
       parameter: {
         ...this.defaultParameterValues,
