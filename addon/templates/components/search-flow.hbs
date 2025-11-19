@@ -2,7 +2,7 @@
 	<div class="search-flow_queries">
 		{{#each this.filters as |filter|}}
 		<div class="search-flow__query">
-			<div class="search-flow__query-title">
+			<div class="search-flow__query-title" {{on "click" (fn this.focusFilterInput filter)}}>
 				{{filter.parameter.title}} :
 			</div>
 			<div class="search-flow__query-value">

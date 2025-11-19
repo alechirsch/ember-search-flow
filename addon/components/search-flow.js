@@ -2,7 +2,7 @@ import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
 import { cached } from '@glimmer/tracking';
 import { A, isArray } from '@ember/array';
-import { action } from '@ember/object';
+import { action, set } from '@ember/object';
 import { setComponentTemplate } from '@ember/component';
 import { hbs } from 'ember-cli-htmlbars';
 import layout from '../templates/components/search-flow';
@@ -195,7 +195,6 @@ class SearchFlowComponent extends Component {
     if (typeof this.maxFilters === 'number' && this.maxFilters <= this.filters.length){
       return false;
     }
-    // Check if any filter has isFocused or lacks a value
     return !this.filters.some(filter => filter.isFocused || !filter.value);
   }
   
@@ -219,12 +218,10 @@ class SearchFlowComponent extends Component {
       return;
     }
     
-    // Check if any existing filter is focused or lacks a value
     const hasInvalidFilter = this.filters.some(filter => filter.isFocused || !filter.value);
     if (hasInvalidFilter) {
       return;
     }
-    
     let filter = {
       parameter: {
         ...this.defaultParameterValues,
@@ -269,6 +266,16 @@ class SearchFlowComponent extends Component {
       this.filters = A(this.filters.filter(f => f !== filter));
     }
     this.generateQuery();
+  }
+
+  @action
+  focusFilterInput(filter, event) {
+    const queryElement = event.target.closest('.search-flow__query');
+    const inputElement = queryElement?.querySelector('.search-flow_input');
+    
+    if (inputElement) {
+      inputElement.focus();
+    }
   }
 }
 
