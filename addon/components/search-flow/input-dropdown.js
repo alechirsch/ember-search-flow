@@ -28,10 +28,7 @@ class InputDropdownComponent extends Component {
     
     schedule('afterRender', this, () => {
       if (!this.value && this.args.filter) {
-        this.args.filter.isFocused = true;
-        this.isFocused = true;
-        this.fetchOptions();
-        this.args.onFocusChange?.();
+        this.focusInput();
       }
       this.setInputWidth();
     });
@@ -104,9 +101,6 @@ class InputDropdownComponent extends Component {
   @action
   wrapperClicked() {
     this.focusInput();
-    if (!this.isFocused) {
-      this.inputFocused();
-    }
   }
 
   get availableOptions() {
