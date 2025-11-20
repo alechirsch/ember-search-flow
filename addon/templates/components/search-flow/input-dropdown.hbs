@@ -1,4 +1,4 @@
-<div class="search-flow_input-dropdown-wrapper" {{on "click" this.wrapperClicked}}>
+<div class="search-flow_input-dropdown-wrapper" {{on "click" this.wrapperClicked}} {{on "mousedown" this.wrapperMouseDown}}>
 	<span class="search-flow_input-inner-wrapper">
 		<Input
 			class="search-flow_input"
@@ -15,18 +15,20 @@
 	{{#if this.isFocused}}
 		<SearchFlow::Dropdown
 			@options={{this.availableOptions}}
-			@activeOption={{this.activeOption}}
+			@activeOptionIndex={{this.validActiveOptionIndex}}
 			@isContains={{@filter.isContains}}
 			@isLoading={{this.isLoading}}
 			@selectOption={{this.selectOption}}
+			@setActiveOption={{this.setActiveOption}}
 		/>
 	{{else if @isParameterSelection}}
 		<SearchFlow::Dropdown
 			@options={{this.availableOptions}}
-			@activeOption={{this.activeOption}}
+			@activeOptionIndex={{this.validActiveOptionIndex}}
 			@isContains={{@filter.isContains}}
 			@isLoading={{this.isLoading}}
 			@selectOption={{this.selectOption}}
+			@setActiveOption={{this.setActiveOption}}
 		/>
 	{{/if}}
 </div>

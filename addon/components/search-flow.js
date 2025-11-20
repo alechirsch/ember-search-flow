@@ -1,10 +1,8 @@
 import Component from '@glimmer/component';
 import { tracked } from '@glimmer/tracking';
-import { cached } from '@glimmer/tracking';
 import { A, isArray } from '@ember/array';
-import { action, set } from '@ember/object';
+import { action } from '@ember/object';
 import { setComponentTemplate } from '@ember/component';
-import { hbs } from 'ember-cli-htmlbars';
 import layout from '../templates/components/search-flow';
 
 class SearchFlowComponent extends Component {

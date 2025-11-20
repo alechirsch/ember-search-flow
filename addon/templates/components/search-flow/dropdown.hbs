@@ -8,16 +8,17 @@
 			</div>
 		{{/unless}}
 	{{else}}
-		{{#each @options as |option|}}
-			<div 
-				class="search-flow_dropdown-option{{if option.isActive ' search-flow_dropdown-option-active'}}"
-				role="button"
-				{{on "click" (fn this.optionClicked option)}}
-				{{on "mouseenter" (fn this.optionHovered option)}}
-			>
-				{{option.title}}
-			</div>
-		{{/each}}
+	{{#each @options as |option|}}
+		<div 
+			class="search-flow_dropdown-option{{if (eq @activeOptionIndex option.index) ' search-flow_dropdown-option-active'}}"
+			role="button"
+			tabindex="-1"
+			{{on "click" (fn this.optionClicked option)}}
+			{{on "mouseenter" (fn this.optionHovered option)}}
+		>
+			{{option.title}}
+		</div>
+	{{/each}}
 	{{/if}}
 	</div>
 	{{#if @isLoading}}

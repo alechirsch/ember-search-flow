@@ -1,25 +1,38 @@
 {
     "env": {
         "browser": true,
-        "es6": true
+        "es6": true,
+        "node": true
     },
-    "extends": "eslint:recommended",
+    "parser": "@babel/eslint-parser",
+    "extends": [
+        "eslint:recommended",
+        "plugin:ember/recommended"
+    ],
+    "plugins": ["ember"],
     "parserOptions": {
         "sourceType": "module",
-		"ecmaVersion": 2017
+        "ecmaVersion": "latest",
+        "requireConfigFile": false,
+        "babelOptions": {
+            "plugins": [
+                ["@babel/plugin-proposal-decorators", { "version": "2023-05" }]
+            ]
+        }
     },
     "rules": {
-        "linebreak-style": [
-            "error",
-            "unix"
-        ],
-        "quotes": [
-            "error",
-            "single"
-        ],
-        "semi": [
-            "error",
-            "always"
-        ]
+        "indent": "off",
+        "no-tabs": "off",
+        "linebreak-style": "off",
+        "quotes": "off",
+        "semi": "off",
+        "no-trailing-spaces": "off",
+        "space-before-blocks": "off",
+        "keyword-spacing": "off",
+        "dot-notation": "off",
+        "no-else-return": "off",
+        "no-magic-numbers": "off",
+        "curly": "off",
+        "no-unused-vars": ["error", { "argsIgnorePattern": "^_" }]
     }
 }
