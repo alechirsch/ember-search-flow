@@ -124,13 +124,25 @@
     margin-left: auto
 }
 
+.search-flow_input-dropdown-wrapper {
+    position: relative;
+    display: inline-block;
+}
+
+.search-flow_input-inner-wrapper {
+    display: inline-block;
+}
+
 .search-flow_input {
     background: none;
     border: none;
     font: inherit;
     color: #fff;
-    width: 4px;
+    min-width: 4px;
+    max-width: 300px;
     padding: 0;
+    // Use ch unit to size based on character count
+    width: auto;
     
     &:focus {
         border: none;

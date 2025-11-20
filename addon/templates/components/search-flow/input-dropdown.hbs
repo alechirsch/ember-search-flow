@@ -1,18 +1,32 @@
-<Input
-	class="search-flow_input"
-	@value={{this.value}}
-	placeholder={{this.placeholder}}
-	{{on 'focusout' this.inputBlurred}}
-	{{on 'focusin' this.inputFocused}}
-	{{on 'keydown' this.inputKeyDown}}
-	{{on 'keyup' this.inputKeyUp}}
-/>
-{{#if this.filter.isFocused}}
-	<SearchFlow::Dropdown
-		@options={{this.availableOptions}}
-		@activeOption={{this.activeOption}}
-		@isContains={{this.filter.isContains}}
-		@isLoading={{this.isLoading}}
-		@selectOption={{action 'selectOption'}}
-	/>
-{{/if}}
+<div class="search-flow_input-dropdown-wrapper" {{on "click" this.wrapperClicked}}>
+	<span class="search-flow_input-inner-wrapper">
+		<Input
+			class="search-flow_input"
+			@value={{this.value}}
+			placeholder={{@placeholder}}
+			{{did-insert this.registerInput}}
+			{{on "input" this.updateValue}}
+			{{on "focusout" this.inputBlurred}}
+			{{on "focusin" this.inputFocused}}
+			{{on "keydown" this.inputKeyDown}}
+			{{on "keyup" this.inputKeyUp}}
+		/>
+	</span>
+	{{#if this.isFocused}}
+		<SearchFlow::Dropdown
+			@options={{this.availableOptions}}
+			@activeOption={{this.activeOption}}
+			@isContains={{@filter.isContains}}
+			@isLoading={{this.isLoading}}
+			@selectOption={{this.selectOption}}
+		/>
+	{{else if @isParameterSelection}}
+		<SearchFlow::Dropdown
+			@options={{this.availableOptions}}
+			@activeOption={{this.activeOption}}
+			@isContains={{@filter.isContains}}
+			@isLoading={{this.isLoading}}
+			@selectOption={{this.selectOption}}
+		/>
+	{{/if}}
+</div>

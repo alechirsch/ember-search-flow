@@ -1,13 +1,15 @@
-/* jshint node: true */
 'use strict';
 
 module.exports = {
-  afterInstall() {
-    return this.addAddonsToProject({
-      packages: [
-        {name: 'ember-cli-autoprefixer'}
-      ]
-    });
+  name: require('./package.json').name,
+
+  options: {
+    '@embroider/macros': {
+      setOwnConfig: {},
+    },
   },
-  name: 'ember-search-flow'
+
+  included(app) {
+    this._super.included.apply(this, arguments);
+  },
 };

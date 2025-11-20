@@ -1,21 +1,28 @@
-import Component from '@ember/component';
-import { set, computed, action } from '@ember/object';
+import Component from '@glimmer/component';
+import { action } from '@ember/object';
+import { setComponentTemplate } from '@ember/component';
 import layout from '../../templates/components/search-flow/dropdown';
-import { classNames, layout as templateLayout } from '@ember-decorators/component';
 
-@templateLayout(layout)
-@classNames('search-flow_dropdown__bg')
-export default class Dropdown extends Component {
-  @computed('options')
+class DropdownComponent extends Component {
   get hasNoOption() {
-    return this.get('options.length') === 0;
+    return this.args.options?.length === 0;
   }
 
-  @action optionHovered(option){
-    this.set('activeOption.isActive', false);
-    set(option, 'isActive', true);
+  @action 
+  optionHovered(option){
+    if (this.args.activeOption) {
+      this.args.activeOption.isActive = false;
+    }
+    option.isActive = true;
   }
-  @action optionClicked(){
-    this.get('selectOption')();
+
+  @action 
+  optionClicked(option) {
+    if (this.args.selectOption) {
+      // Pass the clicked option directly to selectOption
+      this.args.selectOption(option);
+    }
   }
 }
+
+export default setComponentTemplate(layout, DropdownComponent);
