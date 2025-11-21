@@ -11,6 +11,7 @@ class SearchFlowComponent extends Component {
   @tracked didHitEnter = false;
   @tracked _manualFilters = null;
   @tracked _filterFocusTracker = 0; // Track filter focus changes
+  _lastQueryJson = null; // Track the last query to detect external changes
 
   get searchLabel() {
     return this.args.searchLabel || 'Add Filter';
@@ -247,8 +248,21 @@ class SearchFlowComponent extends Component {
 
   @action
   removeFilter(filterToRemove) {
+    // Get current filters BEFORE setting queryGeneratedByComponent
+    // because the getter behavior changes based on that flag
+    const currentFilters = this.filters;
+    
+    // Mark that we're now managing filters manually
+    this.queryGeneratedByComponent = true;
+    
     // Create a new array without the removed filter
-    this.filters = A(this.filters.filter(f => f !== filterToRemove));
+    // Compare by parameter name and value since object identity may differ after restore
+    this.filters = A(currentFilters.filter(f => {
+      return !(f.parameter.name === filterToRemove.parameter.name && 
+               f.value === filterToRemove.value &&
+               (f.isContains || false) === (filterToRemove.isContains || false));
+    }));
+    
     this.generateQuery();
   }
 
