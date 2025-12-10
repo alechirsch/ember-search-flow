@@ -125,7 +125,7 @@ class SearchFlowComponent extends Component {
   }
 
   get canClearAll() {
-    return this.filters.length > 1;
+    return this.filters.length;
   }
 
   isParameterAvailable(parameter) {
